@@ -12,7 +12,7 @@ void setRightDrive(int x) {
 
 void runDriveAt(int x) {
 	setLeftDrive(x);
-	setRigtDrive(x);
+	setRightDrive(x);
 }
 
 void stopDrive() {
