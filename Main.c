@@ -7,14 +7,10 @@
 // Necessary File For Vex Competition
 #include "Vex_Competition_Includes.c"
 
-
 #include "Drive.c"
 #include "Intake.c"
 #include "Shooter.c"
 #include "Elevator.c"
-
-#include "LCD.c"
-
 
 #include "Lift.c"
 
@@ -30,7 +26,8 @@
 #define LOGDRIVEPID
 #define LOGSHOOTERPID
 
-struct LCD LCD;
+
+
 // Ran when you turn ON Robot, I opt not to use this
 void pre_auton() {
 
@@ -49,7 +46,7 @@ task usercontrol() {
 	LCDinit();
 	//Clear LCD and Reset Sensors, then begin teleop
 	clearLCDLine(0);
-	startTask( LCD );
+	startTask( runLCD );
 
 	resetEn();
 	resetGyro();
