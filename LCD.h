@@ -1,11 +1,14 @@
 
 struct LCDstruct {
-	string line0;
-	string line1;
+	char* line0;
+	char* line1;
 	int count;
 };
 LCDstruct LCD;
 void LCDinit();
 void LCDwaitForRelease();
 void LCDwaitForPress();
-void animateFromBottom(string newLine0, string newLine1);
+void animateFromBottom(char* newLine0, char* newLine1);
+void animateFromLeft(char* newLine0, char* newLine1);
+void animateFromRight(char* newLine0, char* newLine1);
+void animateFromTop(char* newLine0, char* newLine1);

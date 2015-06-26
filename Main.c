@@ -44,8 +44,16 @@ task autonomous() {
 //Ran in Teleop
 task usercontrol() {
 	LCDinit();
-	//Clear LCD and Reset Sensors, then begin teleop
 	clearLCDLine(0);
+	clearLCDLine(1);
+	animateFromRight( "BERNARD", "IS MAD" );
+	wait1Msec(500);
+	animateFromRight("HELLO", "WORLD");
+	wait1Msec(500);
+	animateFromRight("Bernard", "Sucks");
+	wait1Msec(5000);
+
+	//Clear LCD and Reset Sensors, then begin teleop
 	startTask( runLCD );
 
 	resetEn();
@@ -61,7 +69,7 @@ task usercontrol() {
 	while(true) {
 		if (vexRT[Btn8L]) {
 			shiftToLiftMode();
-		}else if (vexRT[Btn8R]) {
+			}else if (vexRT[Btn8R]) {
 			shiftToBallMode();
 		}
 	}

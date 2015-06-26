@@ -4,13 +4,11 @@ const short leftButton = 1;
 const short centerButton = 2;
 const short rightButton = 4;
 
-
-
-
-
-
-
-
+void 	runLCDIntroScreen() {
+	animateFromBottom("WELCOME!", "TEAM 3309 LCD PROGRAM");
+	wait1Msec(250);
+	animateFromBottom("MAIN MENU INCOMING" , ":)");
+}
 /*
 //This tasks begins running in usercontrol, from there, it continously runs until an auto has been selected.
 //as soon as middle has been selected, the loop stops, and the auto is locked in
@@ -26,13 +24,10 @@ const short rightButton = 4;
 //Refer to AUTO.c to see how our code chooses which auto to use based on LCD.count. look at startauton
 */
 task runLCD(){
-	displayLCDCenteredString(0, "Welcome!");
-	wait1Msec(700);
-	clearLCDLine(0);
-	displayLCDCenteredString(0, "Time to pick auto!");
-	displayLCDCenteredString(1, "Default auto is no move");
+	runLCDIntroScreen();
+	runLCDMainMenu();
 	wait1Msec(1500);
-
+	runMainMenu();
 	//------------- Beginning of User Interface Code ---------------
 	//Clear LCD
 	clearLCDLine(0);
