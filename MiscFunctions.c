@@ -2,7 +2,7 @@
 
 
 
-// |== Task Management ==|
+// ---Task Management ---
 //Starts All Tasks that Pertain to Shooting
 void startBallTasks() {
 	startTask( intakeTask );
@@ -26,7 +26,7 @@ void shiftToBallMode() {
 	startBallTasks();
 }
 
-//|== Sensor Management ==|
+// --- Sensor Management ---
 // Reset All Encoders
 void resetEn() {
 
@@ -46,4 +46,11 @@ void resetGyro() {
 	wait1Msec(2000);
 	startTask( driveTask );
 	startBallTasks();
+}
+
+void initSensors() {
+	resetEn();
+#ifdef INIT_GYRO_ON_STARTUP
+	resetGyro();
+#endif
 }

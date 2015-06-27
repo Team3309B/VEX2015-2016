@@ -24,8 +24,6 @@
 #include "DeclarationsAndDefines.h"
 
 
-
-
 // Ran when you turn ON Robot, I opt not to use this
 void pre_auton() {
 
