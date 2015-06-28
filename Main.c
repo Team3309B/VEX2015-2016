@@ -42,6 +42,7 @@ task usercontrol() {
 	// Start up the LCD
 	LCDInit();
 	startTask( runLCD );
+	startTask( buttonTask );
 
 	// Clear Encoders and possibly Gyro
 	initSensors();
