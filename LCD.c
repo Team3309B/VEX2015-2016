@@ -6,6 +6,32 @@ void LCDInit() {
 	LCD.count = 0;
 	LCD.line0 = "";
 	LCD.line1 = "";
+	LCD.auto[0] = "None";
+	LCD.auto[1] = "None";
+	LCD.auto[2] = "None";
+	LCD.auto[3] = "None";
+	LCD.auto[4] = "None";
+}
+// --- LCD Button Functions ---
+bool LCDIsLeftButtonPressed() {
+	if (nLCDButtons == leftBtnVEX) {
+		return true;
+	}
+	return false;
+}
+
+bool LCDIsRightButtonPressed() {
+	if (nLCDButtons == rightBtnVEX) {
+		return true;
+	}
+	return false;
+}
+
+bool LCDIsCenterButtonPressed() {
+	if (nLCDButtons == centerBtnVEX) {
+		return true;
+	}
+	return false;
 }
 
 // --- Clearing Functions ---

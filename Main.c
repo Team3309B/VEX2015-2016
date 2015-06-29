@@ -9,11 +9,13 @@
 // Necessary File For Vex Competition
 #include "Vex_Competition_Includes.c"
 
+#include "DeclarationsAndDefines.h"
+
+// Subsystems
 #include "Drive.c"
 #include "Intake.c"
 #include "Shooter.c"
 #include "Elevator.c"
-
 #include "Lift.c"
 
 #include "LCDTask.c"
@@ -21,7 +23,7 @@
 #include "Auto.c"
 
 #include "MiscFunctions.c"
-#include "DeclarationsAndDefines.h"
+
 
 
 // Ran when you turn ON Robot, I opt not to use this

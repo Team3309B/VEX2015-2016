@@ -4,6 +4,7 @@ struct LCDstruct {
 	char* line0; // Top line of LCD Screen
 	char* line1; // Bottom line of LCD Screen
 	int count; // Used to keep track of what screen of a menu you are on
+	string auto[5];
 };
 LCDstruct LCD;
 void LCDInit();

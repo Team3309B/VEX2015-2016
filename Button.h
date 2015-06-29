@@ -17,5 +17,37 @@ int isPressed( ControllerButton b );
 int isTapped( ControllerButton b );
 int isReleased( ControllerButton b );
 
-ControllerButton Button8D ;
+// Controller 1 Buttons
+ControllerButton Button8D;
+ControllerButton Button8U;
+ControllerButton Button8L;
+ControllerButton Button8R;
+
+ControllerButton Button7D;
+ControllerButton Button7U;
+ControllerButton Button7L;
+ControllerButton Button7R;
+
+ControllerButton Button5D;
+ControllerButton Button5U;
+
+ControllerButton Button6D;
+ControllerButton Button6U;
+
+// Controller 2 Buttons
+ControllerButton ButtonP8D;
+ControllerButton ButtonP8U;
+ControllerButton ButtonP8L;
+ControllerButton ButtonP8R;
+
+ControllerButton ButtonP7D;
+ControllerButton ButtonP7U;
+ControllerButton ButtonP7L;
+ControllerButton ButtonP7R;
+
+ControllerButton ButtonP5D;
+ControllerButton ButtonP5U;
+
+ControllerButton ButtonP6D;
+ControllerButton ButtonP6U;
 #endif
