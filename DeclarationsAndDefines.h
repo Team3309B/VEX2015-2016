@@ -10,12 +10,15 @@
 	#define INIT_GYRO_ON_STARTUP // Takes a three second gyro init period upon startup
 #endif
 
+// -- Task Management Vars ---
+bool isBallMode = true; // Keeps track of which tasks are running
+
 // --- Drive Vars ---
 // Starting values set by LCD screen to be x and y at beginning of match
-int startx;
-int starty;
-int x;
-int y;
+int startx = 0;
+int starty = 0;
+int x = 0;
+int y = 0;
 
 // --- Auto Making Constants ---
 // Starting Positions for match play (LCD uses them)

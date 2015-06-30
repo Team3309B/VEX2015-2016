@@ -1,7 +1,4 @@
 
-
-
-
 // ---Task Management ---
 //Starts All Tasks that Pertain to Shooting
 void startBallTasks() {
@@ -24,6 +21,15 @@ void shiftToLiftMode() {
 void shiftToBallMode() {
 	stopTask( liftTask );
 	startBallTasks();
+}
+
+void shiftModes() {
+	if(	isBallMode ) {
+		shiftToLiftMode();
+	}else {
+		shiftToBallMode();
+	}
+	isBallMode = !isBallMode;
 }
 
 // --- Sensor Management ---

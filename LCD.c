@@ -6,12 +6,12 @@ void LCDInit() {
 	LCD.count = 0;
 	LCD.line0 = "";
 	LCD.line1 = "";
-	LCD.auto[0] = "None";
-	LCD.auto[1] = "None";
-	LCD.auto[2] = "None";
-	LCD.auto[3] = "None";
-	LCD.auto[4] = "None";
+	LCD.autoPosition = 0;
+	for (int i = 0; i < MAX_AUTO_COMMANDS; i++ ) {
+		LCD.auto[i] = "None";
+	}
 }
+
 // --- LCD Button Functions ---
 bool LCDIsLeftButtonPressed() {
 	if (nLCDButtons == leftBtnVEX) {
@@ -45,6 +45,15 @@ void LCDClear0() {
 void LCDClear1() {
 	clearLCDLine(1);
 	LCD.line1 = "";
+}
+
+// Clears line in param
+void LCDClear(int line) {
+	if (line == 0) {
+		LCDClear0();
+	}else if (line == 1) {
+		LCDClear1();
+	}
 }
 
 // Clears both lines
@@ -180,4 +189,86 @@ void LCDAnimateFromLeft(char* newLine0, char* newLine1) {
 	}
 	LCDClear();
 	LCDSetLine01(newLine0, newLine1);
+}
+
+// --- Animating Only One Line ---
+// Sends the old text to the left and brings the new text on from the right
+void LCDAnimateFromRight(int line, char* newLine0, char* newLine1) {
+	int starting = 0;
+	if (line == 0) {
+		starting = 7 - (strlen(LCD.line0)/2);
+	}else if( line == 1) {
+		int starting = 7 - (strlen(LCD.line1)/2);
+	}
+	// Animate the old text from middle to left
+	for (int i = starting; i >= -starting; i--) {
+		LCDClear(line);
+		if(line == 0) {
+			displayLCDString(0, i, LCD.line0);
+		}else if(line == 1) {
+			displayLCDString(1, i, LCD.line1);
+		}
+		wait1Msec(50);
+	}
+	LCDClear(line);
+	int starting0 = 7 - (strlen(newLine0)/2);
+	int starting1 = 7 - (strlen(newLine1)/2);
+	// Animate the new text from right to middle
+	for (int i = 16; i >= 1; i--) {
+		if (i >= starting0 && line == 0) {
+			LCDClear0();
+			LCDSetLine0(newLine0);
+		}
+		if (i >= starting1 && line == 1) {
+			LCDClear1();
+			LCDSetLine1(newLine1);
+		}
+		wait1Msec(50);
+	}
+	LCDClear();
+	LCDSetLine01(newLine0, newLine1);
+}
+
+// Sends the old text to the right and brings the new text on from the left, keeping line line
+void LCDAnimateFromLeft(int line, char* newLine0, char* newLine1) {
+	int starting = 0;
+	if (line == 0) {
+		starting = 7 - (strlen(LCD.line0)/2);
+	}else if( line == 1) {
+		int starting = 7 - (strlen(LCD.line1)/2);
+	}
+	// Animate the old text from middle to right
+	for (int i = 1; i <= 16; i++) {
+		LCDClear(line);
+		if (line == 0) {
+			displayLCDString(0, starting + i, LCD.line0);
+		}else if( line == 1) {
+			displayLCDString(1, starting + i, LCD.line1);
+		}
+		wait1Msec(50);
+	}
+	LCDClear(line);
+	int starting0 = 7 - (strlen(newLine0)/2);
+	int starting1 = 7 - (strlen(newLine1)/2);
+	// Animate the new text from left to middle
+	for (int i = 1; i <= 16; i++) {
+		if (i <= starting0 && line == 0) {
+			LCDClear0();
+			displayLCDString(0, i, newLine0);
+		}
+		if (i <= starting1 && line == 1) {
+			LCDClear1();
+			displayLCDString(1, i, newLine1);
+		}
+		wait1Msec(50);
+	}
+	LCDClear();
+	LCDSetLine01(newLine0, newLine1);
+}
+
+// --- Auto Functions ---
+// Use to add text to auto
+void LCDAddAuto( char* autoText ) {
+	LCD.auto[LCD.autoPosition] = autoText;
+	LCD.autoPosition++;
 }
