@@ -1,3 +1,11 @@
+// --- Joystick Functions ---
+// Makes the value 0 if it is less than thresh
+int threshold( int value, int thresh) {
+	if ( abs(value) < thresh) {
+		return 0;
+	}
+	return values;
+}
 
 // ---Task Management ---
 //Starts All Tasks that Pertain to Shooting
