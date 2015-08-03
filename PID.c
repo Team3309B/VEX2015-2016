@@ -1,39 +1,46 @@
 #include "PID.h"
-void PIDInit(struct PID controller, float kP, float kD) {
+#ifndef PID_SOURCE
+#define PID_SOURCE
+#pragma systemFile
+void PIDInit(PID controller, float kP, float kD) {
 	controller.kP = kP;
+	controller.kI = 0;
 	controller.kD = kD;
+	controller.integral = 0;
+	controller.kILimit = 50;
 }
 
-float PIDRun(struct PID controller, float error) {
+void PIDInit(PID controller, float kP, float kI, float kD) {
+	controller.kP = kP;
+	controller.kI = kI;
+	controller.kD = kD;
+	controller.integral = 0;
+	controller.kILimit = 50;
+}
+
+float PIDRun(PID controller, float error) {
 
 	// calculate the derivative
 	float pidDerivative = error - controller.previousError;
 	controller.previousError = error;
-	// calculate drive
+
+	if(controller.integral > controller.kILimit)
+		controller.integral = controller.kILimit;
+
+	if(controller.integral < -controller.kILimit)
+		controller.integral = -controller.kILimit;
+
 	writeDebugStreamLine("KP: %4.4f KD: %4.4f", (controller.kP * error),(controller.kD * pidDerivative));
-	return ((controller.kP * error)  + (controller.kD * pidDerivative));
-
-
+	return ((controller.kP * error)  + (controller.kI * controller.integral) + (controller.kD * pidDerivative));
 }
 
-int requestedGyroAngle;
-struct PID gyroPID;
-void 	PIDStartGyroTask(struct PID controller, int requested) {
-	requestedGyroAngle = requested;
-	startTask(gyro);
-	gyroPID = controller;
-
+// Sets the limit for the integral constant
+void PIDSetIntegralLimit(PID controller, float kILimit) {
+	controller.kILimit = kILimit;
 }
 
-
-task PIDGyroController() {
-		int pidDrive = PIDRun(gyroPID, SensorValue[gyro] - requestedGyroAngle);
-		motor[leftFront] = pidDrive;
-		motor[leftBack] = pidDrive;
-		motor[rightFront] = -pidDrive;
-		motor[rightBack] = -pidDrive;
+// Restes the integral value
+void PIDResetIntegral(PID controller) {
+	controller.integral = 0;
 }
-
-void 	PIDStopGyroTask(struct PID controller) {
-	stopTask(gyro);
-}
+#endif

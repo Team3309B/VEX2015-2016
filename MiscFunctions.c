@@ -4,7 +4,7 @@ int threshold( int value, int thresh) {
 	if ( abs(value) < thresh) {
 		return 0;
 	}
-	return values;
+	return value;
 }
 
 // ---Task Management ---

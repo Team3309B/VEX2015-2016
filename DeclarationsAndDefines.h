@@ -1,4 +1,5 @@
 #include "Button.c"
+#include "PID.c"
 #ifdef AT_COMPETITION
 
 	#define UPDATECONTROLLER
@@ -17,8 +18,23 @@ bool isBallMode = true; // Keeps track of which tasks are running
 // Starting values set by LCD screen to be x and y at beginning of match
 int startx = 0;
 int starty = 0;
+// Drive Equation Stuff
 int x = 0;
 int y = 0;
+float pastLeft = 0;
+float pastRight = 0;
+float pastGyro = 0;
+#define driveEquationDelayAmount 25 //Amount delayed between each loop of drive equation
+#define MAX_ANG_VEL 720 // Max Turning Speed
+#define MAX_VEL 100 // Max Forward Velocity
+PID gyroDrivePID;
+PID driveLeftDrivePID;
+PID driveRightDrivePID;
+
+// --- Shooter Vars ---
+int aimShooterSpeed = 0;
+PID shooterQuickPID; // Gets there super quickly
+PID shooterConstantPID; // Balances power to keep consistent speed
 
 // --- Auto Making Constants ---
 // Starting Positions for match play (LCD uses them)

@@ -4,13 +4,17 @@
 struct PID {
 	float kP;
 	float kD;
-
+	float kI;
+  float kILimit;
+  float integral;
 	float previousError;
 };
 
-void PIDInit(struct PID controller, float kP, float kD);
-float PIDRun(struct PID controller, float error);
-void 	PIDStartGyroTask(struct PID controller, int requested);
-void 	PIDStopGyroTask(struct PID controller);
+void PIDInit(PID controller, float kP, float kI, float kD);
+void PIDInit(PID controller, float kP, float kD);
+float PIDRun(PID controller, float error);
+void PIDSetIntegralLimit(PID controller, float kILimit);
+void PIDResetIntegral(PID controller);
+
 
 #endif
