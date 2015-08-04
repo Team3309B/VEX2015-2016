@@ -33,8 +33,15 @@ PID driveRightDrivePID;
 
 // --- Shooter Vars ---
 int aimShooterSpeed = 0;
+int shooterSpeed = 0;
+float previousShooterVelocity = 0;
+int pastShooter;
 PID shooterQuickPID; // Gets there super quickly
 PID shooterConstantPID; // Balances power to keep consistent speed
+int ticksSinceShoot = 0;
+#define TICKS_TO_USE_QUICK_SPEED_AFTER_SHOOTING 300
+#define SHOOTER_OFFSET_AFTER_SHOOTING 20
+#define shooterEquationDelayAmount 25
 
 // --- Auto Making Constants ---
 // Starting Positions for match play (LCD uses them)
