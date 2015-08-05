@@ -2,12 +2,13 @@
 task intakeTask()
 {
 	while(true) {
-		if(isTapped(Button5U) )
+		if( vexRT[Btn5UXmtr2] ) {
 			motor[intake] = 127;
-		else if(isTapped(Button5D))
+	}else if( vexRT[Btn5DXmtr2]){
 			motor[intake] = -127;
-		else
+	}else{
 			motor[intake] = 0;
+		}
 	}
 
 

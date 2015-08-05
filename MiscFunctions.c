@@ -54,13 +54,14 @@ void resetSensors() {
 
 // Recalibrate the Gyro, stop all tasks while doing so
 void resetGyro() {
-	stopAllTasks();
+
+//stopAllTasks();
 	SensorType[in1] = sensorNone;
 	wait1Msec(1105);
 	SensorType[in1] = sensorGyro;
 	wait1Msec(2000);
-	startTask( driveTask );
-	startBallTasks();
+	//startTask( driveTask );
+	//startBallTasks();
 }
 
 void initSensors() {

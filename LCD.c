@@ -14,21 +14,21 @@ void LCDInit() {
 
 // --- LCD Button Functions ---
 bool LCDIsLeftButtonPressed() {
-	if (nLCDButtons == leftBtnVEX) {
+	if (nLCDButtons == 4) {
 		return true;
 	}
 	return false;
 }
 
 bool LCDIsRightButtonPressed() {
-	if (nLCDButtons == rightBtnVEX) {
+	if (nLCDButtons == 1) {
 		return true;
 	}
 	return false;
 }
 
 bool LCDIsCenterButtonPressed() {
-	if (nLCDButtons == centerBtnVEX) {
+	if (nLCDButtons == 2) {
 		return true;
 	}
 	return false;

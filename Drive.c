@@ -1,13 +1,11 @@
 
 
 void setLeftDrive(int x) {
-	motor[leftFrontDrive] = x;
-	motor[leftBackDrive] = x;
+	motor[leftDrive] = x;
 }
 
 void setRightDrive(int x) {
-	motor[rightFrontDrive] = x;
-	motor[rightBackDrive] = x;
+	motor[rightDrive] = x;
 }
 
 void runDriveAt(int x) {
@@ -61,12 +59,17 @@ void driveHalo ( int throttle, int turn ) {
 	float rightVel = rightVelocityPWM + skim(rightVelocityPWM);
 
 	// Set power to motors
-	motor[leftFrontDrive]  = 127*(leftVel + angVel); // (y + x)/2
-	motor[rightFrontDrive] = 127*(rightVel - angVel);
-	motor[leftBackDrive]  = 127*(leftVel + angVel);  // (y + x)/2
-	motor[rightBackDrive] = 127*(rightVel - angVel);
-
+	motor[leftDrive]  = 127*(leftVel + angVel); // (y + x)/2
+	motor[rightDrive] = 127*(rightVel - angVel);
 	delay(driveEquationDelayAmount);
+}
+
+void lameDrive() {
+	float leftSpeed = vexRT[Ch3] + vexRT[Ch1];
+	float rightSpeed = vexRT[Ch3] - vexRT[Ch1];
+	//writeDebugStreamLine("LEFT: %d RIGHT: %d", leftSpeed, rightSpeed);
+	motor[rightDrive] = rightSpeed;
+	motor[leftDrive] = leftSpeed;
 }
 
 task driveTask() {
@@ -74,6 +77,7 @@ task driveTask() {
 	PIDInit(driveRightDrivePID, .11, 0);
 	PIDInit(driveLeftDrivePID, .11, 0);
 	while(true) {
-		driveHalo( vexRT[Ch3], vexRT[Ch1] );
+		lameDrive();
+		//driveHalo( vexRT[Ch3], vexRT[Ch1] );
 	}
 }
