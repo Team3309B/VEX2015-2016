@@ -31,7 +31,7 @@ float PIDRun(PID controller, float error) {
 		controller.integral = -controller.kILimit;
 
 	//writeDebugStreamLine("KP: %4.4f KD: %4.4f", (controller.kP * error),(controller.kD * pidDerivative));
-	return ((controller.kP * error)  + (controller.kI * controller.integral) + (controller.kD * pidDerivative));
+	return (float)((float)(controller.kP * error)  + (float)(controller.kI * controller.integral) + (float)(controller.kD * pidDerivative));
 }
 
 // Sets the limit for the integral constant

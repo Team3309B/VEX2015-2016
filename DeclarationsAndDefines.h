@@ -32,10 +32,11 @@ PID driveLeftDrivePID;
 PID driveRightDrivePID;
 
 // --- Shooter Vars ---
-int aimShooterSpeed = 0;
-int shooterSpeed = 0;
+float aimShooterSpeed = 0;
+float shooterSpeed = 0;
+float currentVelocity = 0;
 float previousShooterVelocity = 0;
-int pastShooter;
+float pastShooter;
 PID shooterQuickPID; // Gets there super quickly
 PID shooterConstantPID; // Balances power to keep consistent speed
 int ticksSinceShoot = 0;
