@@ -47,7 +47,7 @@ task shooterTask() {
 	PIDInit(shooterConstantPID, .05, 0, 0);
 	PIDSetIntegralLimit(shooterQuickPID, 1000);
 	while(true) {
-		currentVelocity = ((float)((float)nMotorEncoder[shooter1] - (float)pastShooter)/(float)shooterEquationDelayAmount) * 40.0;
+		currentVelocity = ((float)((float)nMotorEncoder[shooter1] - (float)pastShooter)/(float)shooterEquationDelayAmount) * 40.0 * 60.0; // gets in rpm
 		checkAndFindSpeed();
 		//shoot();
 		runShooterAt(aimShooterSpeed);

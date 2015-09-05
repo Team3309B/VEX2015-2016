@@ -11,6 +11,9 @@
 	#define INIT_GYRO_ON_STARTUP // Takes a three second gyro init period upon startup
 #endif
 
+// -- Misc Vars --
+#define METERS_TO_CENTIMETERS(x) ()
+
 // -- Task Management Vars ---
 bool isBallMode = true; // Keeps track of which tasks are running
 
@@ -19,8 +22,10 @@ bool isBallMode = true; // Keeps track of which tasks are running
 int startx = 0;
 int starty = 0;
 // Drive Equation Stuff
-int x = 0;
-int y = 0;
+float xLeft = 0;
+float yLeft = 0;
+float xRight = 0;
+float yRight = 0;
 float pastLeft = 0;
 float pastRight = 0;
 float pastGyro = 0;

@@ -35,6 +35,7 @@ void driveHalo ( int throttle, int turn ) {
 	float rightDriveVelocity = (float)(((float)SensorValue[rightDrive] - pastRight) / driveEquationDelayAmount);
 	float gyroAngularVelocity = (float)(((float)-SensorValue[gyro] - pastGyro) / driveEquationDelayAmount);
 
+	xRight += sin((SensorValue[gyro]/10) * (PI/180)) * ((float)SensorValue[rightDrive] - pastRight));
 	// Track x and y coordinates
 	x += sin((SensorValue[gyro]/10) * (PI/180)) * ((((float)-SensorValue[leftDrive] - pastLeft) + ((float)SensorValue[rightDrive] - pastRight))/2);
 	y += cos((SensorValue[gyro]/10) * (PI/180)) * ((((float)-SensorValue[leftDrive] - pastLeft) + ((float)SensorValue[rightDrive] - pastRight))/2);

@@ -3,13 +3,15 @@
 #pragma config(Sensor, dgtl1,  leftDrive,      sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  rightDrive,     sensorQuadEncoder)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
+#pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
+#pragma config(Sensor, I2C_3,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Motor,  port1,           intake,        tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           shooter1,      tmotorVex393_MC29, openLoop, reversed, encoderPort, I2C_1)
 #pragma config(Motor,  port3,           shooter2,      tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           shooter3,      tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           shooter4,      tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port6,           rightDrive,    tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port7,           leftDrive,     tmotorVex393_MC29, openLoop, reversed)
+#pragma config(Motor,  port6,           rightDrive,    tmotorVex393_MC29, openLoop, encoderPort, I2C_2)
+#pragma config(Motor,  port7,           leftDrive,     tmotorVex393_MC29, openLoop, reversed, encoderPort, I2C_3)
 #pragma config(Motor,  port8,           elevator1,     tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port9,           lift,          tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port10,          elevator2,     tmotorVex393_HBridge, openLoop, reversed)
@@ -25,7 +27,7 @@ void setMotor(int motorNum, float power) {
 }
 
 #include "DeclarationsAndDefines.h"
-
+#include "Sensors.c"
 // Subsystems
 #include "Drive.c"
 #include "Intake.c"
