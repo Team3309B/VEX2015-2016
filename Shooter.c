@@ -1,13 +1,13 @@
 void runShooterAt(int power) {
-	setMotor(shooter1, power);
-	setMotor(shooter2, power);
-	setMotor(shooter3, power);
-	setMotor(shooter4, power);
+	motor[shooter1] = power;
+	motor[shooter2] = power;
+	motor[shooter3] = power;
+	motor[shooter4] = power;
 }
 
 void checkAndFindSpeed() {
 	if (vexRT[Btn7DXmtr2]){
-			aimShooterSpeed = .39;
+			aimShooterSpeed = 540;
 		//aimShooterSpeed = -.25;
 	}else if( vexRT[Btn7LXmtr2] ){
 			aimShooterSpeed = .47;
@@ -21,15 +21,16 @@ void checkAndFindSpeed() {
 		//shoot();
 	}else if( vexRT[Btn8UXmtr2] ) {
 		//aimShooterSpeed = -2.5; // .8400
-			aimShooterSpeed = .92
+			aimShooterSpeed = .92;
 	}else if (vexRT[Btn8DXmtr2]){
 		aimShooterSpeed = .78;
 	}else if(vexRT[Btn8LXmtr2]) {
 		aimShooterSpeed = .86;
 	}else if(vexRT[Btn8RXmtr2]) {
 		aimShooterSpeed = 1;
-	}else
+	}else {
 		aimShooterSpeed = 0;
+	}
 }
 
 void shoot() {
@@ -43,16 +44,16 @@ void shoot() {
 }
 
 task shooterTask() {
-	PIDInit(shooterQuickPID, 1, 1, 1);
-	PIDInit(shooterConstantPID, .05, 0, 0);
+	PIDInit(shooterQuickPID, 1, 0, 0);
+	PIDInit(shooterConstantPID, .015, 0, .05);
 	PIDSetIntegralLimit(shooterQuickPID, 1000);
 	while(true) {
-		currentVelocity = ((float)((float)nMotorEncoder[shooter1] - (float)pastShooter)/(float)shooterEquationDelayAmount) * 40.0 * 60.0; // gets in rpm
+		// Negative to compensate for polarity
+		float curEn = ((float)nMotorEncoder[shooter1]/233);
+		currentVelocity = -((float)((float)curEn - (float)pastShooter)/((float)shooterEquationDelayAmount)) * 10.0 * 60.0; // gets in rpm
 		checkAndFindSpeed();
-		//shoot();
-		runShooterAt(aimShooterSpeed);
-		previousShooterVelocity = currentVelocity;
-		pastShooter = nMotorEncoder[shooter1];
-		delay(shooterEquationDelayAmount);
+		shoot();
+		pastShooter = curEn;
+		wait1Msec(shooterEquationDelayAmount);
 	}
 }

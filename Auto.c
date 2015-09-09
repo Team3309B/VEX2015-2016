@@ -1,8 +1,6 @@
 
 void startauton()
 {
-	x = startx;
-	y = starty;
 	//for (int i = 0; i < LCD.
 	runShooterAt(120);
 	wait1Msec(2000);

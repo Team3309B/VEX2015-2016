@@ -1,12 +1,11 @@
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    gyro,           sensorGyro)
-#pragma config(Sensor, dgtl1,  leftDrive,      sensorQuadEncoder)
-#pragma config(Sensor, dgtl3,  rightDrive,     sensorQuadEncoder)
+#pragma config(Sensor, dgtl1,  elevatorEncoder, sensorQuadEncoder)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Sensor, I2C_3,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Motor,  port1,           intake,        tmotorVex393_HBridge, openLoop, reversed)
-#pragma config(Motor,  port2,           shooter1,      tmotorVex393_MC29, openLoop, reversed, encoderPort, I2C_1)
+#pragma config(Motor,  port2,           shooter1,      tmotorVex393TurboSpeed_MC29, openLoop, reversed, encoderPort, I2C_1)
 #pragma config(Motor,  port3,           shooter2,      tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           shooter3,      tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           shooter4,      tmotorVex393_MC29, openLoop)
@@ -23,7 +22,7 @@
 #include "Vex_Competition_Includes.c"
 
 void setMotor(int motorNum, float power) {
-	motor[motorNum]	= (power * 127);
+	motor[motorNum]	= power;
 }
 
 #include "DeclarationsAndDefines.h"
@@ -77,9 +76,13 @@ task usercontrol() {
 	writeDebugStreamLine("IT HAS STARTED");
 
 	while(true) {
+		writeDebugStreamLine("en: %4.4f", nMotorEncoder[shooter1]);
+		writeDebugStreamLine("RawEn: %4.4f", nMotorEncoderRaw[shooter1]);
+		writeDebugStreamLine("Elevator En: %4.4f", SensorValue[elevatorEncoder]);
 		// Toggle for switching modes between climbing and shooting
 		/*if ( isTapped(ButtonP8L) ) {
 		shiftModes();
 		}*/
+		wait1Msec(100);
 	}
 }

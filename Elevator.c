@@ -4,12 +4,10 @@ void setElevator(int power) {
 }
 
 // Elevator and Hopper Mechanism
-task elevatorTask()
-{
-
+task elevatorTask() {
+	PIDInit(elevatorPID, 1, 0, 0);
 	while(true) {
-		setElevator(vexRT[Ch3Xmtr2] );
+		float currentElevatorVelocity = (
+		setElevatorSpeed(PIDCompute(elevatorPID, ));
 	}
-
-
 }
