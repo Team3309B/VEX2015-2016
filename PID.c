@@ -23,6 +23,7 @@ float PIDRun(PID controller, float error) {
 	// calculate the derivative
 	float pidDerivative = error - controller.previousError;
 	controller.previousError = error;
+	controller.integral = error + controller.integral;
 
 	if(controller.integral > controller.kILimit)
 		controller.integral = controller.kILimit;

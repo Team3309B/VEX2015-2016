@@ -6,9 +6,10 @@ void runShooterAt(int power) {
 }
 
 void sendString ( TUARTs uart, char* hello ) {
-	for(int i = 0; i < sizeof(hello); i++) {
+	for(int i = 0; i < 32; i++) {
 		sendChar(uart, hello[i]);
 	}
+	sendChar(uart, '\r');
 	sendChar(uart, '\n');
 }
 
@@ -44,9 +45,9 @@ void shoot() {
 	if(aimShooterSpeed != 0) {
 		shooterSpeed = shooterSpeed + (float)PIDRun( shooterConstantPID, (float)aimShooterSpeed - (float)currentVelocity );
 		char inFormat[32];
-		sprintf(inFormat, "%4.4f, %4.4f, %4.4f", currentVelocity, aimShooterSpeed, shooterSpeed);
+		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, shooterSpeed);
 		writeDebugStreamLine(inFormat);
-		//sendString(uartOne, inFormat);
+		sendString(uartOne, inFormat);
 		runShooterAt(shooterSpeed);
 	}else {
 		runShooterAt(0);
@@ -58,9 +59,8 @@ task shooterTask() {
 	PIDInit(shooterConstantPID, .015, 0, .05);
 	PIDSetIntegralLimit(shooterQuickPID, 1000);
 	while(true) {
-
 		// Negative to compensate for polarity
-		float curEn = ((float)nMotorEncoder[shooter1]/233);
+		float curEn = ((float)nMotorEncoder[shooter1]);
 		currentVelocity = -((float)((float)curEn - (float)pastShooter)/((float)shooterEquationDelayAmount)) * 10.0 * 60.0; // gets in rpm
 		checkAndFindSpeed();
 		shoot();

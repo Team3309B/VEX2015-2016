@@ -1,4 +1,5 @@
 #pragma config(UART_Usage, UART1, uartUserControl, baudRate115200, IOPins, None, None)
+#pragma config(UART_Usage, UART2, uartNotUsed, baudRate4800, IOPins, None, None)
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    gyro,           sensorNone)
 #pragma config(Sensor, dgtl1,  elevatorEncoder, sensorQuadEncoder)
