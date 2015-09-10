@@ -1,4 +1,7 @@
 #pragma systemFile
+
+
+
 // --- Joystick Functions ---
 // Makes the value 0 if it is less than thresh
 int threshold( int value, int thresh) {
@@ -44,7 +47,8 @@ void shiftModes() {
 // --- Sensor Management ---
 // Reset All Encoders
 void resetEn() {
-
+	SensorValue[elevatorEncoder] = 0;
+	nMotorEncoder[shooter1] = 0;
 }
 
 // Reset All Sensors

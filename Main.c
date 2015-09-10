@@ -1,5 +1,6 @@
+#pragma config(UART_Usage, UART1, uartUserControl, baudRate115200, IOPins, None, None)
 #pragma config(I2C_Usage, I2C1, i2cSensors)
-#pragma config(Sensor, in1,    gyro,           sensorGyro)
+#pragma config(Sensor, in1,    gyro,           sensorNone)
 #pragma config(Sensor, dgtl1,  elevatorEncoder, sensorQuadEncoder)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
@@ -76,9 +77,10 @@ task usercontrol() {
 	writeDebugStreamLine("IT HAS STARTED");
 
 	while(true) {
-		writeDebugStreamLine("en: %4.4f", nMotorEncoder[shooter1]);
-		writeDebugStreamLine("RawEn: %4.4f", nMotorEncoderRaw[shooter1]);
-		writeDebugStreamLine("Elevator En: %4.4f", SensorValue[elevatorEncoder]);
+		writeDebugStreamLine("HELLO");
+		//writeDebugStreamLine("en: %4.4f", nMotorEncoder[shooter1]);
+	//	writeDebugStreamLine("Elevator En: %4.4f", SensorValue[elevatorEncoder]);
+
 		// Toggle for switching modes between climbing and shooting
 		/*if ( isTapped(ButtonP8L) ) {
 		shiftModes();
