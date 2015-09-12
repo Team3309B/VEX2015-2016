@@ -23,10 +23,6 @@
 // Necessary File For Vex Competition
 #include "Vex_Competition_Includes.c"
 
-void setMotor(int motorNum, float power) {
-	motor[motorNum]	= power;
-}
-
 #include "DeclarationsAndDefines.h"
 #include "Sensors.c"
 // Subsystems
@@ -62,7 +58,6 @@ task usercontrol() {
 	//LCDInit();
 	//startTask( runLCD );
 	writeDebugStreamLine("IT STARTED");
-	startTask( buttonTask );
 
 	// Clear Encoders and possibly Gyro
 	initSensors();
@@ -80,7 +75,7 @@ task usercontrol() {
 	while(true) {
 		writeDebugStreamLine("HELLO");
 		//writeDebugStreamLine("en: %4.4f", nMotorEncoder[shooter1]);
-	//	writeDebugStreamLine("Elevator En: %4.4f", SensorValue[elevatorEncoder]);
+		//writeDebugStreamLine("Elevator En: %4.4f", SensorValue[elevatorEncoder]);
 
 		// Toggle for switching modes between climbing and shooting
 		/*if ( isTapped(ButtonP8L) ) {

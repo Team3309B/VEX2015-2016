@@ -1,4 +1,3 @@
-#include "Button.c"
 #include "PID.c"
 #ifdef AT_COMPETITION
 

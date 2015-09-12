@@ -43,7 +43,7 @@ void checkAndFindSpeed() {
 
 void shoot() {
 	if(aimShooterSpeed != 0) {
-		shooterSpeed = shooterSpeed + (float)PIDRun( shooterConstantPID, (float)aimShooterSpeed - (float)currentVelocity );
+		shooterSpeed = (float)PIDRun( shooterConstantPID, (float)aimShooterSpeed - (float)currentVelocity );
 		char inFormat[32];
 		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, shooterSpeed);
 		writeDebugStreamLine(inFormat);
@@ -56,15 +56,16 @@ void shoot() {
 
 task shooterTask() {
 	PIDInit(shooterQuickPID, 1, 0, 0);
-	PIDInit(shooterConstantPID, .015, 0, .05);
+	PIDInit(shooterConstantPID, .015, 0, 0);
 	PIDSetIntegralLimit(shooterQuickPID, 1000);
 	while(true) {
+		clearTimer(T1);
 		// Negative to compensate for polarity
 		float curEn = ((float)nMotorEncoder[shooter1]);
 		currentVelocity = -((float)((float)curEn - (float)pastShooter)/((float)shooterEquationDelayAmount)) * 10.0 * 60.0; // gets in rpm
 		checkAndFindSpeed();
 		shoot();
 		pastShooter = curEn;
-		wait1Msec(shooterEquationDelayAmount);
+		wait1Msec(shooterEquationDelayAmount - time1[T1]);
 	}
 }

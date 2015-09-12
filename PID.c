@@ -7,7 +7,7 @@ void PIDInit(PID controller, float kP, float kD) {
 	controller.kI = 0;
 	controller.kD = kD;
 	controller.integral = 0;
-	controller.kILimit = 50;
+	controller.kILimit = 127;
 }
 
 void PIDInit(PID controller, float kP, float kI, float kD) {
@@ -15,7 +15,7 @@ void PIDInit(PID controller, float kP, float kI, float kD) {
 	controller.kI = kI;
 	controller.kD = kD;
 	controller.integral = 0;
-	controller.kILimit = 50;
+	controller.kILimit = 127;
 }
 
 float PIDRun(PID controller, float error) {
