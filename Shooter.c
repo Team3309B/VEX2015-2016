@@ -42,22 +42,24 @@ void checkAndFindSpeed() {
 }
 
 void shoot() {
+
 	if(aimShooterSpeed != 0) {
-		shooterSpeed = (float)PIDRun( shooterConstantPID, (float)aimShooterSpeed - (float)currentVelocity );
+		shooterSpeed += (float)PIDRun( shooterConstantPID, (float)aimShooterSpeed - (float)currentVelocity );
 		char inFormat[32];
 		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, shooterSpeed);
 		writeDebugStreamLine(inFormat);
 		sendString(uartOne, inFormat);
 		runShooterAt(shooterSpeed);
 	}else {
+		shooterSpeed = 0;
 		runShooterAt(0);
 	}
 }
 
 task shooterTask() {
 	PIDInit(shooterQuickPID, 1, 0, 0);
-	PIDInit(shooterConstantPID, .015, 0, 0);
-	PIDSetIntegralLimit(shooterQuickPID, 1000);
+	PIDInit(shooterConstantPID, .011, .001, .045);
+	PIDSetIntegralLimit(shooterQuickPID, 127);
 	while(true) {
 		clearTimer(T1);
 		// Negative to compensate for polarity
