@@ -15,36 +15,44 @@ void sendString ( TUARTs uart, char* hello ) {
 
 void checkAndFindSpeed() {
 	if (vexRT[Btn7DXmtr2]){
-			aimShooterSpeed = 540;
+			aimShooterSpeed = 530;
 		//aimShooterSpeed = -.25;
 	}else if( vexRT[Btn7LXmtr2] ){
-			aimShooterSpeed = .47;
+			aimShooterSpeed = 540;
 		//aimShooterSpeed = -.6; //.5600
 	}else if( vexRT[Btn7RXmtr2]  ){
-			aimShooterSpeed = .70;
+			aimShooterSpeed = 570;
 		//aimShooterSpeed = -.75; //.7200
 	}else if( vexRT[Btn7UXmtr2] ){
 		//aimShooterSpeed = -.85;
-		aimShooterSpeed = .59;
+		aimShooterSpeed = 580;
 		//shoot();
 	}else if( vexRT[Btn8UXmtr2] ) {
 		//aimShooterSpeed = -2.5; // .8400
-			aimShooterSpeed = .92;
+			aimShooterSpeed = 620;
 	}else if (vexRT[Btn8DXmtr2]){
-		aimShooterSpeed = .78;
+		aimShooterSpeed = 590;
 	}else if(vexRT[Btn8LXmtr2]) {
-		aimShooterSpeed = .86;
+		aimShooterSpeed = 600;
 	}else if(vexRT[Btn8RXmtr2]) {
-		aimShooterSpeed = 1;
+		aimShooterSpeed = 610;
 	}else {
 		aimShooterSpeed = 0;
 	}
 }
 
 void shoot() {
-
+	shooterSpeed += (float)PIDRun( shooterConstantPID, (float)aimShooterSpeed - (float)currentVelocity );
+	if(currentVelocity < (aimShooterSpeed - 60) ) {
+		runShooterAt(127);
+		char inFormat[32];
+		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, 127);
+		writeDebugStreamLine(inFormat);
+		sendString(uartOne, inFormat);
+		return;
+	}
 	if(aimShooterSpeed != 0) {
-		shooterSpeed += (float)PIDRun( shooterConstantPID, (float)aimShooterSpeed - (float)currentVelocity );
+
 		char inFormat[32];
 		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, shooterSpeed);
 		writeDebugStreamLine(inFormat);
@@ -58,7 +66,7 @@ void shoot() {
 
 task shooterTask() {
 	PIDInit(shooterQuickPID, 1, 0, 0);
-	PIDInit(shooterConstantPID, .011, .001, .045);
+	PIDInit(shooterConstantPID, .022, .0005, .096);
 	PIDSetIntegralLimit(shooterQuickPID, 127);
 	while(true) {
 		clearTimer(T1);
@@ -68,6 +76,7 @@ task shooterTask() {
 		checkAndFindSpeed();
 		shoot();
 		pastShooter = curEn;
+
 		wait1Msec(shooterEquationDelayAmount - time1[T1]);
 	}
 }
