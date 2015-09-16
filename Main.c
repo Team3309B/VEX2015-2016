@@ -3,6 +3,7 @@
 #pragma config(I2C_Usage, I2C1, i2cSensors)
 #pragma config(Sensor, in1,    gyro,           sensorNone)
 #pragma config(Sensor, dgtl1,  elevatorEncoder, sensorQuadEncoder)
+#pragma config(Sensor, dgtl3,  elevatorTopLimitSwitch, sensorTouch)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Sensor, I2C_3,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
@@ -22,6 +23,14 @@
 
 // Necessary File For Vex Competition
 #include "Vex_Competition_Includes.c"
+
+void sendString ( TUARTs uart, char* hello ) {
+	for(int i = 0; i < 32; i++) {
+		sendChar(uart, hello[i]);
+	}
+	sendChar(uart, '\r');
+	sendChar(uart, '\n');
+}
 
 #include "DeclarationsAndDefines.h"
 #include "Sensors.c"
@@ -54,6 +63,7 @@ task autonomous() {
 //Ran in Teleop
 task usercontrol() {
 	nMotorEncoder[shooter1] = 0;
+	clearTimer(T2);
 	// Start up the LCD
 	//LCDInit();
 	//startTask( runLCD );

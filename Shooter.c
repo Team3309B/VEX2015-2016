@@ -5,13 +5,7 @@ void runShooterAt(int power) {
 	motor[shooter4] = power;
 }
 
-void sendString ( TUARTs uart, char* hello ) {
-	for(int i = 0; i < 32; i++) {
-		sendChar(uart, hello[i]);
-	}
-	sendChar(uart, '\r');
-	sendChar(uart, '\n');
-}
+
 
 void checkAndFindSpeed() {
 	if (vexRT[Btn7DXmtr2]){
@@ -37,14 +31,14 @@ void checkAndFindSpeed() {
 	}else if(vexRT[Btn8RXmtr2]) {
 		aimShooterSpeed = 610;
 	}else {
-		aimShooterSpeed = 0;
+		aimShooterSpeed = 530;
 	}
 }
 
 void shoot() {
 	shooterSpeed += (float)PIDRun( shooterConstantPID, (float)aimShooterSpeed - (float)currentVelocity );
-	if(currentVelocity < (aimShooterSpeed - 60) ) {
-		runShooterAt(127);
+	if(currentVelocity < (aimShooterSpeed - 90) ) {
+		runShooterAt(90);
 		char inFormat[32];
 		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, 127);
 		writeDebugStreamLine(inFormat);
@@ -52,7 +46,9 @@ void shoot() {
 		return;
 	}
 	if(aimShooterSpeed != 0) {
+		if (currentVelocity < pastShooter - 100) {
 
+		}
 		char inFormat[32];
 		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, shooterSpeed);
 		writeDebugStreamLine(inFormat);
@@ -66,8 +62,9 @@ void shoot() {
 
 task shooterTask() {
 	PIDInit(shooterQuickPID, 1, 0, 0);
-	PIDInit(shooterConstantPID, .022, .0005, .096);
+	PIDInit(shooterConstantPID, .026, .001, .05);
 	PIDSetIntegralLimit(shooterQuickPID, 127);
+	bool timerStarted = false;
 	while(true) {
 		clearTimer(T1);
 		// Negative to compensate for polarity
@@ -75,8 +72,21 @@ task shooterTask() {
 		currentVelocity = -((float)((float)curEn - (float)pastShooter)/((float)shooterEquationDelayAmount)) * 10.0 * 60.0; // gets in rpm
 		checkAndFindSpeed();
 		shoot();
+		//runShooterAt(127);
+		if ( abs(currentVelocity) < ( abs(aimShooterSpeed) + 20) && abs(currentVelocity) > ( abs(aimShooterSpeed) - 20 ) ) {
+			if (timerStarted && time1[T3] > 1000) {
+				shooterIsReady = true;
+		}else if(!timerStarted) {
+				clearTimer(T3);
+				timerStarted = true;
+		}else {
+		}
+		}else {
+			timerStarted = false;
+			shooterIsReady = false;
+		}
 		pastShooter = curEn;
-
+		previousShooterVelocity = currentVelocity;
 		wait1Msec(shooterEquationDelayAmount - time1[T1]);
 	}
 }

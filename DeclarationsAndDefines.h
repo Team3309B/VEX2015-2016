@@ -41,6 +41,7 @@ float shooterSpeed = 0;
 float currentVelocity = 0;
 float previousShooterVelocity = 0;
 float pastShooter;
+bool shooterIsReady = false;
 PID shooterQuickPID; // Gets there super quickly
 PID shooterConstantPID; // Balances power to keep consistent speed
 int ticksSinceShoot = 0;
