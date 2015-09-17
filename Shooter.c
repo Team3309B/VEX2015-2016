@@ -31,7 +31,7 @@ void checkAndFindSpeed() {
 	}else if(vexRT[Btn8RXmtr2]) {
 		aimShooterSpeed = 610;
 	}else {
-		aimShooterSpeed = 530;
+		aimShooterSpeed = 0;
 	}
 }
 
@@ -46,6 +46,7 @@ void shoot() {
 		return;
 	}
 	if(aimShooterSpeed != 0) {
+		shooting = true;
 		if (currentVelocity < pastShooter - 100) {
 
 		}
@@ -55,6 +56,7 @@ void shoot() {
 		sendString(uartOne, inFormat);
 		runShooterAt(shooterSpeed);
 	}else {
+		shooting = false;
 		shooterSpeed = 0;
 		runShooterAt(0);
 	}
