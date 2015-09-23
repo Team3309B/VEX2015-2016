@@ -2,10 +2,12 @@
 
 void setLeftDrive(int x) {
 	motor[leftDrive] = x;
+	motor[leftDriveExtra] = x;
 }
 
 void setRightDrive(int x) {
 	motor[rightDrive] = x;
+	motor[rightDriveExtra] = x;
 }
 
 void runDriveAt(int x) {
@@ -69,8 +71,8 @@ void lameDrive() {
 	float leftSpeed = vexRT[Ch3] + vexRT[Ch1];
 	float rightSpeed = vexRT[Ch3] - vexRT[Ch1];
 	//writeDebugStreamLine("LEFT: %d RIGHT: %d", leftSpeed, rightSpeed);
-	motor[rightDrive] = rightSpeed;
-	motor[leftDrive] = leftSpeed;
+	setRightDrive(rightSpeed);
+	setLeftDrive(leftSpeed);
 }
 
 task driveTask() {

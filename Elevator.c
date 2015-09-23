@@ -1,5 +1,4 @@
 void setElevator(int power) {
-	motor[elevator1] = power;
 	motor[elevator2] = power;
 }
 
@@ -14,7 +13,7 @@ float goalElevatorVelocity = 0.8;
 int timeIntervalElevator = 100;
 float currentPIDValue = 0;
 // Elevator and Hopper Mechanism
-ElevatorState curElevatorState = ingateReadyToShoot;
+ElevatorState curElevatorState = notIngateNotReadyToShoot;
 task elevatorTask() {
 	PIDInit(elevatorPID, 10, 0, 0);
 	wait1Msec(2000);
@@ -28,30 +27,28 @@ task elevatorTask() {
 				while(SensorValue[elevatorTopLimitSwitch] == 1) {}
 				clearTimer(T2);
 				curElevatorState = notIngateNotReadyToShoot;
-				}else if (curElevatorState == notIngateNotReadyToShoot) {
+			}else if (curElevatorState == notIngateNotReadyToShoot) {
 				setElevator(127);
 				if(SensorValue[elevatorTopLimitSwitch] == 1) {
 					curElevatorState = ingateNotReadyToShoot;
 				}
-				}else if(curElevatorState == ingateNotReadyToShoot) {
-				setElevator(-127);
-				wait1Msec(100);
+			}else if(curElevatorState == ingateNotReadyToShoot) {
 				while (!shooterIsReady) {
-					setElevator(0);
+					setElevator(-5);
 				}
 				setElevator(110);
 				curElevatorState = ingateReadyToShoot;
-				}else if(curElevatorState == notIngateReadyToShoot) {
+			}else if(curElevatorState == notIngateReadyToShoot) {
 				setElevator(110);
 				while(!SensorValue[elevatorTopLimitSwitch]) {
 				}
 				setElevator(127);
 				wait1Msec(2000);
 				curElevatorState = ingateNotReadyToShoot;
-				}else {
+			}else {
 				setElevator(0);
 			}
-		}else {
+			}else {
 			setElevator(vexRT[Ch3Xmtr2]);
 		}
 		/*
