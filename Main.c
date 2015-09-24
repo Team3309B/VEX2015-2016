@@ -4,6 +4,8 @@
 #pragma config(Sensor, in8,    backupBattery,  sensorAnalog)
 #pragma config(Sensor, dgtl1,  elevatorEncoder, sensorQuadEncoder)
 #pragma config(Sensor, dgtl3,  elevatorTopLimitSwitch, sensorTouch)
+#pragma config(Sensor, dgtl4,  rightDriveTrain, sensorQuadEncoder)
+#pragma config(Sensor, dgtl6,  leftDriveTrain, sensorQuadEncoder)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Sensor, I2C_3,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
@@ -85,7 +87,14 @@ task usercontrol() {
 	writeDebugStreamLine("IT HAS STARTED");
 
 	while(true) {
-		writeDebugStreamLine("%4.4f DRIVE: %4.4f %4.4f", nMotorEncoder(shooter1), nMotorEncoder(rightDrive), nMotorEncoder(leftDrive));
+		if(vexRT[Btn6U]) {
+			stopTask(driveTask);
+			motor[port8] = vexRT[Ch2Xmtr2];
+			motor[port9] = vexRT[Ch2Xmtr2];
+		}else {
+			startTask(driveTask);
+		}
+		writeDebugStreamLine("%4.4f DRIVE: %4.4f %4.4f", (float)SensorValue[backupBattery]/275, nMotorEncoder(rightDrive), nMotorEncoder(leftDrive));
 		displayLCDCenteredString(0, "Hello");
 		//writeDebugStreamLine("en: %4.4f", nMotorEncoder[shooter1]);
 		//writeDebugStreamLine("Elevator En: %4.4f", SensorValue[elevatorEncoder]);
@@ -93,7 +102,7 @@ task usercontrol() {
 		// Toggle for switching modes between climbing and shooting
 		/*if ( isTapped(ButtonP8L) ) {
 		shiftModes();
-		}*/
+		}*/\
 		wait1Msec(250);
 	}
 }

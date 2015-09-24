@@ -30,7 +30,11 @@ task elevatorTask() {
 			}else if (curElevatorState == notIngateNotReadyToShoot) {
 				setElevator(127);
 				if(SensorValue[elevatorTopLimitSwitch] == 1) {
+					setElevator(-20);
+					wait1Msec(100);
 					curElevatorState = ingateNotReadyToShoot;
+				}else if(shooterIsReady) {
+					curElevatorState = notIngateReadyToShoot;
 				}
 			}else if(curElevatorState == ingateNotReadyToShoot) {
 				while (!shooterIsReady) {
@@ -42,9 +46,9 @@ task elevatorTask() {
 				setElevator(110);
 				while(!SensorValue[elevatorTopLimitSwitch]) {
 				}
-				setElevator(127);
-				wait1Msec(2000);
-				curElevatorState = ingateNotReadyToShoot;
+				setElevator(-20);
+				wait1Msec(150);
+				curElevatorState = ingateReadyToShoot;
 			}else {
 				setElevator(0);
 			}

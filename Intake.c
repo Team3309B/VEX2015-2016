@@ -14,13 +14,11 @@ task intakeTask()
 			motor[intake] = 127;
 			}else if( vexRT[Btn6DXmtr2]){
 			motor[intake] = -127;
-			}else if(vexRT[Btn6U]) {
-			motor[intake] = 63;
-			}else if( vexRT[Btn6D]){
-			motor[intake] = -63;
-			}else {
+			}else  {
 			motor[intake] = 0;
 		}
+
+
 	}
 
 
