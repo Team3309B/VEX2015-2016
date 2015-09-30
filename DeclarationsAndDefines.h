@@ -52,6 +52,13 @@ int ticksSinceShoot = 0;
 
 PID elevatorPID;
 float pastElevatorVelocity = 0;
+typedef enum {
+	ingateReadyToShoot = 0,
+	notIngateReadyToShoot = 1,
+	ingateNotReadyToShoot = 2,
+	notIngateNotReadyToShoot = 3,
+} ElevatorState;
+ElevatorState curElevatorState = notIngateNotReadyToShoot;
 
 // --- Auto Making Constants ---
 // Starting Positions for match play (LCD uses them)

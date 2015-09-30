@@ -38,12 +38,12 @@ void checkAndFindSpeed() {
 void shoot() {
 	shooterSpeed += (float)PIDRun( shooterConstantPID, (float)aimShooterSpeed - (float)currentVelocity );
 	/*if(currentVelocity < (aimShooterSpeed - 90) ) {
-		runShooterAt(90);
-		char inFormat[32];
-		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, 127);
-		writeDebugStreamLine(inFormat);
-		sendString(uartOne, inFormat);
-		return;
+	runShooterAt(90);
+	char inFormat[32];
+	sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, 127);
+	writeDebugStreamLine(inFormat);
+	sendString(uartOne, inFormat);
+	return;
 	}*/
 	if(aimShooterSpeed != 0) {
 		shooting = true;
@@ -51,7 +51,7 @@ void shoot() {
 
 		}
 		char inFormat[32];
-		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, shooterSpeed);
+		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,%3.3f, %3.3f", currentVelocity, aimShooterSpeed, shooterSpeed, curElevatorState, motor[elevator2]);
 		writeDebugStreamLine(inFormat);
 		sendString(uartOne, inFormat);
 		runShooterAt(shooterSpeed);
@@ -64,7 +64,7 @@ void shoot() {
 
 task shooterTask() {
 	PIDInit(shooterQuickPID, 1, 0, 0);
-	PIDInit(shooterConstantPID, .0152, .000001, .78);
+	PIDInit(shooterConstantPID, .0152, .000099,.78);
 	PIDSetIntegralLimit(shooterQuickPID, 127);
 	bool timerStarted = false;
 	//runShooterAt(127);
@@ -77,27 +77,26 @@ task shooterTask() {
 		checkAndFindSpeed();
 		shoot();
 		/*if(vexRT[Btn7DXmtr2]) {
-			runShooterAt(127);
-			if(time1[T2] > 550) {
-				shooterIsReady = true;
-			}else {
-				shooterIsReady = false;
-			}
-			shooting = true;
+		runShooterAt(127);
+		if(time1[T2] > 550) {
+		shooterIsReady = true;
 		}else {
-			shooting = false;
+		shooterIsReady = false;
+		}
+		shooting = true;
+		}else {
+		shooting = false;
 		}*/
 
 
-		if ( abs(currentVelocity) < ( abs(aimShooterSpeed) + 15) && abs(currentVelocity) > ( abs(aimShooterSpeed) - 15 ) ) {
-			if (timerStarted && time1[T3] > 500) {
+		if ( abs(currentVelocity) < ( abs(aimShooterSpeed) + 16) && abs(currentVelocity) > ( abs(aimShooterSpeed) - 16 ) ) {
+			if (timerStarted && time1[T3] > 2000) {
 				shooterIsReady = true;
-				}else if(!timerStarted) {
+			}else if(!timerStarted) {
 				clearTimer(T3);
 				timerStarted = true;
-				}else {
-			}
-			}else {
+			}else {	}
+		}else {
 			timerStarted = false;
 			shooterIsReady = false;
 		}
