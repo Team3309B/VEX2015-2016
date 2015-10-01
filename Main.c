@@ -7,16 +7,16 @@
 #pragma config(Sensor, dgtl4,  rightDriveTrain, sensorQuadEncoder)
 #pragma config(Sensor, dgtl6,  leftDriveTrain, sensorQuadEncoder)
 #pragma config(Sensor, dgtl8,  elevatorTopLimitSwitch, sensorTouch)
+#pragma config(Sensor, dgtl9,  gyroButton,     sensorTouch)
+#pragma config(Sensor, dgtl10, encoderButton,  sensorTouch)
 #pragma config(Sensor, I2C_1,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
-#pragma config(Sensor, I2C_2,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
-#pragma config(Sensor, I2C_3,  ,               sensorQuadEncoderOnI2CPort,    , AutoAssign)
 #pragma config(Motor,  port1,           intake,        tmotorVex393_HBridge, openLoop, reversed)
 #pragma config(Motor,  port2,           shooter1,      tmotorVex393TurboSpeed_MC29, openLoop, reversed, encoderPort, I2C_1)
 #pragma config(Motor,  port3,           shooter2,      tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port4,           shooter3,      tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           shooter4,      tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port6,           rightDrive,    tmotorVex393_MC29, openLoop, encoderPort, I2C_2)
-#pragma config(Motor,  port7,           leftDrive,     tmotorVex393_MC29, openLoop, reversed, encoderPort, I2C_3)
+#pragma config(Motor,  port6,           rightDrive,    tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port7,           leftDrive,     tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port8,           rightDriveExtra, tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port9,           leftDriveExtra, tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port10,          elevator2,     tmotorVex393_HBridge, openLoop, reversed)
@@ -35,6 +35,15 @@ void sendString ( TUARTs uart, char* hello ) {
 	sendChar(uart, '\n');
 }
 
+// --- Joystick Functions ---
+// Makes the value 0 if it is less than thresh
+int threshold( int value, int thresh) {
+	if ( abs(value) < thresh) {
+		return 0;
+	}
+	return value;
+}
+
 #include "DeclarationsAndDefines.h"
 #include "Sensors.c"
 // Subsystems
@@ -48,6 +57,8 @@ void sendString ( TUARTs uart, char* hello ) {
 
 #include "Auto.c"
 #include "MiscFunctions.c"
+
+
 
 // Ran when you turn ON Robot, I opt not to use this
 void pre_auton() {
@@ -88,6 +99,7 @@ task usercontrol() {
 	writeDebugStreamLine("IT HAS STARTED");
 
 	while(true) {
+
 		if(vexRT[Btn6U]) {
 			stopTask(driveTask);
 			motor[port8] = vexRT[Ch2Xmtr2];
@@ -95,15 +107,18 @@ task usercontrol() {
 		}else {
 			startTask(driveTask);
 		}
-		writeDebugStreamLine("%4.4f DRIVE: %4.4f %4.4f", (float)SensorValue[backupBattery]/275, nMotorEncoder(rightDrive), nMotorEncoder(leftDrive));
-		displayLCDCenteredString(0, "Hello");
-		//writeDebugStreamLine("en: %4.4f", nMotorEncoder[shooter1]);
-		//writeDebugStreamLine("Elevator En: %4.4f", SensorValue[elevatorEncoder]);
 
+		displayLCDCenteredString(0, "Hello");
+
+		if(SensorValue(gyroButton)) {
+			resetGyro();
+		}else if(SensorValue(encoderButton)) {
+			resetEn();
+		}
 		// Toggle for switching modes between climbing and shooting
 		/*if ( isTapped(ButtonP8L) ) {
 		shiftModes();
-		}*/\
+		}*/
 		wait1Msec(250);
 	}
 }

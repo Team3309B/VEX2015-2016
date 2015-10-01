@@ -2,14 +2,7 @@
 
 
 
-// --- Joystick Functions ---
-// Makes the value 0 if it is less than thresh
-int threshold( int value, int thresh) {
-	if ( abs(value) < thresh) {
-		return 0;
-	}
-	return value;
-}
+
 
 // ---Task Management ---
 //Starts All Tasks that Pertain to Shooting
@@ -49,6 +42,8 @@ void shiftModes() {
 void resetEn() {
 	SensorValue[elevatorEncoder] = 0;
 	nMotorEncoder[shooter1] = 0;
+	SensorValue(rightDriveTrain) = 0;
+	SensorValue(leftDriveTrain) = 0;
 }
 
 // Reset All Sensors
