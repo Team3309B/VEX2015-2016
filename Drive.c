@@ -37,8 +37,8 @@ void driveHalo ( int throttle, int turn ) {
 
 	// Find current velocities
 	float leftDriveVelocity = (float)(((float)-SensorValue[leftDriveTrain] - pastLeft) / driveEquationDelayAmount);
-	float rightDriveVelocity = (float)(((float)SensorValue[rightDriveTrain] - pastRight) / driveEquationDelayAmount);
-	float gyroAngularVelocity = (float)(((float)-SensorValue[gyro] - pastGyro) / driveEquationDelayAmount);
+	float rightDriveVelocity = (float)(((float)-SensorValue[rightDriveTrain] - pastRight) / driveEquationDelayAmount);
+	float gyroAngularVelocity = (float)(((float)SensorValue[gyro] - pastGyro) / driveEquationDelayAmount);
 	writeDebugStreamLine(" DRIVE: rightVel: %4.4f leftVel: %4.4f ang: %4.4f", rightDriveVelocity, leftDriveVelocity, gyroAngularVelocity);
 
 	xRight += sin((SensorValue[gyro]/10) * (PI/180)) * ((float)SensorValue[rightDriveTrain] - pastRight);
@@ -47,9 +47,9 @@ void driveHalo ( int throttle, int turn ) {
 	float y = cos((SensorValue[gyro]/10) * (PI/180)) * ((((float)-SensorValue[leftDriveTrain] - pastLeft) + ((float)SensorValue[rightDriveTrain] - pastRight))/2);
 
 	// Store past position so next time, the loop can find velocities
-	pastRight = (float)SensorValue[rightDriveTrain];
+	pastRight = (float)-SensorValue[rightDriveTrain];
 	pastLeft = (float)-SensorValue[leftDriveTrain];
-	pastGyro = (float)-SensorValue[gyro];
+	pastGyro = (float)SensorValue[gyro];
 
 	// Find target by multiplying joystick percentage by 127
 	float targetAngularVelocity = (float)((float) turn/127) * MAX_ANG_VEL;
@@ -63,9 +63,9 @@ void driveHalo ( int throttle, int turn ) {
 	float rightVelocityPWM = PIDRun(driveRightDrivePID, targetDriveVelocity - rightDriveVelocity);
 
 	// Get overall vel from new velocities added to old ones
-	angVel += skim(angVelocityPWM);// + skim(angVelocityPWM);
-	leftVel += skim(leftVelocityPWM);// + skim(leftVelocityPWM);
-	rightVel += skim(rightVelocityPWM);// + skim(rightVelocityPWM);
+	angVel += angVelocityPWM// + skim(angVelocityPWM);
+	leftVel += leftVelocityPWM;// + skim(leftVelocityPWM);
+	rightVel += rightVelocityPWM;// + skim(rightVelocityPWM);
 
 	writeDebugStreamLine("SET VEL: Left: %4.4f Right: %4.4f ", (leftVel + angVel), (rightVel - angVel));
 	writeDebugStreamLine(" ");
@@ -77,18 +77,27 @@ void driveHalo ( int throttle, int turn ) {
 void lameDrive() {
 	float leftSpeed = vexRT[Ch3] + vexRT[Ch1];
 	float rightSpeed = vexRT[Ch3] - vexRT[Ch1];
+	// Find current velocities
+	float leftDriveVelocity = (float)(((float)-SensorValue[leftDriveTrain] - pastLeft) / driveEquationDelayAmount);
+	float rightDriveVelocity = (float)(((float)-SensorValue[rightDriveTrain] - pastRight) / driveEquationDelayAmount);
+	float gyroAngularVelocity = (float)(((float)SensorValue[gyro] - pastGyro) / driveEquationDelayAmount);
+	writeDebugStreamLine(" DRIVE: rightVel: %4.4f leftVel: %4.4f ang: %4.4f", rightDriveVelocity, leftDriveVelocity, gyroAngularVelocity);
 	//writeDebugStreamLine("LEFT: %d RIGHT: %d", leftSpeed, rightSpeed);
 	setRightDrive(rightSpeed);
 	setLeftDrive(leftSpeed);
+		// Store past position so next time, the loop can find velocities
+	pastRight = (float)-SensorValue[rightDriveTrain];
+	pastLeft = (float)-SensorValue[leftDriveTrain];
+	pastGyro = (float)SensorValue[gyro];
 }
 
 task driveTask() {
-	PIDInit(gyroDrivePID, .5, 00);
-	PIDInit(driveRightDrivePID, 1, 0);
-	PIDInit(driveLeftDrivePID, 1, 0);
+	PIDInit(gyroDrivePID, .005, 00);
+	PIDInit(driveRightDrivePID, .6, 0);
+	PIDInit(driveLeftDrivePID, .6, 0);
 	while(true) {
-		//lameDrive();
-		driveHalo( threshold(vexRT[Ch3], 20), threshold(vexRT[Ch1], 20) );
+		lameDrive();
+		//driveHalo( threshold(vexRT[Ch3], 20), threshold(vexRT[Ch1], 20) );
 		wait1Msec(driveEquationDelayAmount);
 	}
 }

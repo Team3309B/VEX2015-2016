@@ -28,9 +28,9 @@ float yRight = 0;
 float pastLeft = 0;
 float pastRight = 0;
 float pastGyro = 0;
-#define driveEquationDelayAmount 100 //Amount delayed between each loop of drive equation
+#define driveEquationDelayAmount 150 //Amount delayed between each loop of drive equation
 #define MAX_ANG_VEL 50 // Max Turning Speed
-#define MAX_VEL .9 // Max Forward Velocity
+#define MAX_VEL .6 // Max Forward Velocity
 PID gyroDrivePID;
 PID driveLeftDrivePID;
 PID driveRightDrivePID;

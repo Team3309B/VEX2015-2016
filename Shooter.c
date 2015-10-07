@@ -5,14 +5,15 @@ void runShooterAt(int power) {
 	motor[shooter4] = power;
 }
 
-
-
+bool pressed = false;
+int curPower = 0;
+int offset = 0;
 void checkAndFindSpeed() {
 	if (vexRT[Btn7DXmtr2]){
-		aimShooterSpeed = 485;
+		aimShooterSpeed = 475;
 		//aimShooterSpeed = -.25;
 		}else if( vexRT[Btn7LXmtr2] ){
-		aimShooterSpeed = 495;
+		aimShooterSpeed = 485;
 		//aimShooterSpeed = -.6; //.5600
 		}else if( vexRT[Btn7RXmtr2]  ){
 		aimShooterSpeed = 500;
@@ -21,17 +22,24 @@ void checkAndFindSpeed() {
 		//aimShooterSpeed = -.85;
 		aimShooterSpeed = 530;
 		//shoot();
-		}else if( vexRT[Btn8UXmtr2] ) {
-		//aimShooterSpeed = -2.5; // .8400
-		aimShooterSpeed = 620;
-		}else if (vexRT[Btn8DXmtr2]){
-		aimShooterSpeed = 590;
-		}else if(vexRT[Btn8LXmtr2]) {
-		aimShooterSpeed = 600;
-		}else if(vexRT[Btn8RXmtr2]) {
-		aimShooterSpeed = 610;
 		}else {
+			aimShooterSpeed = 0;
+		}
+
+	if(vexRT[Btn5DXmtr2]) {
+		offset--;
+		pressed = true;
+		}else if(vexRT[Btn5UXmtr2]) {
+	 offset++;
+	 pressed = true;
+		}else if( vexRT[Btn8UXmtr2] ) {
+		curPower = 80;
+		pressed = false;
+		}else {
+		pressed = false;
 		aimShooterSpeed = 0;
+		curPower = 0;
+		offset = 0;
 	}
 }
 
@@ -55,7 +63,9 @@ void shoot() {
 		writeDebugStreamLine(inFormat);
 		sendString(uartOne, inFormat);
 		runShooterAt(shooterSpeed);
-		}else {
+		}else if (curPower != 0) {
+		runShooterAt(curPower + offset);
+	}else {
 		shooting = false;
 		shooterSpeed = 0;
 		runShooterAt(0);
@@ -76,6 +86,7 @@ task shooterTask() {
 		currentVelocity = -((float)((float)curEn - (float)pastShooter)/((float)shooterEquationDelayAmount)) * 10.0 * 60.0; // gets in rpm
 		checkAndFindSpeed();
 		shoot();
+
 		/*if(vexRT[Btn7DXmtr2]) {
 		runShooterAt(127);
 		if(time1[T2] > 550) {

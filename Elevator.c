@@ -1,4 +1,4 @@
-void setElevator(int power) {
+oid setElevator(int power) {
 	motor[elevator2] = power;
 }
 
@@ -26,7 +26,7 @@ task elevatorTask() {
 		float currentElevatorVelocity = -( SensorValue[elevatorEncoder] - pastElevatorVelocity)/timeIntervalElevator;
 		float error = (goalElevatorVelocity - currentElevatorVelocity);
 		if (abs(vexRT[Ch3Xmtr2]) > 20) {
-			setElevator(80);
+			setElevator(vexRT[Ch3Xmtr2]);
 		}else {
 			setElevator(0);
 		}
