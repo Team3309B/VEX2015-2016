@@ -1,4 +1,4 @@
-oid setElevator(int power) {
+void setElevator(int power) {
 	motor[elevator2] = power;
 }
 

@@ -15,7 +15,7 @@ void checkAndFindSpeed() {
 		}else if( vexRT[Btn7LXmtr2] ){
 		aimShooterSpeed = 485;
 		//aimShooterSpeed = -.6; //.5600
-		}else if( vexRT[Btn7RXmtr2]  ){
+		}else if( vexRT[Btn7RXmtr2] ){
 		aimShooterSpeed = 500;
 		//aimShooterSpeed = -.75; //.7200
 		}else if( vexRT[Btn7UXmtr2] ){
@@ -37,7 +37,6 @@ void checkAndFindSpeed() {
 		pressed = false;
 		}else {
 		pressed = false;
-		aimShooterSpeed = 0;
 		curPower = 0;
 		offset = 0;
 	}
