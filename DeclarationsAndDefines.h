@@ -9,6 +9,7 @@
 
 	#define INIT_GYRO_ON_STARTUP // Takes a three second gyro init period upon startup
 #endif
+bool isAuto = false;
 
 // -- Misc Vars --
 #define METERS_TO_CENTIMETERS(x) ()
@@ -27,13 +28,18 @@ float xRight = 0;
 float yRight = 0;
 float pastLeft = 0;
 float pastRight = 0;
-float pastGyro = 0;
+float pastGyro = SensorValue[gyro];
 #define driveEquationDelayAmount 150 //Amount delayed between each loop of drive equation
-#define MAX_ANG_VEL 50 // Max Turning Speed
+#define MAX_ANG_VEL 1.8 // Max Turning Speed
 #define MAX_VEL .6 // Max Forward Velocity
+#define wheelDeadband .02
+#define throttleDeadband .02
 PID gyroDrivePID;
 PID driveLeftDrivePID;
 PID driveRightDrivePID;
+PID holdAnglePID;
+PID holdEnPID;
+float oldWheel = 0.0;
 
 // --- Shooter Vars ---
 float aimShooterSpeed = 0;
@@ -52,6 +58,7 @@ int ticksSinceShoot = 0;
 
 PID elevatorPID;
 float pastElevatorVelocity = 0;
+#define ELEVATOR_MAX_SPEED .95
 typedef enum {
 	ingateReadyToShoot = 0,
 	notIngateReadyToShoot = 1,
@@ -59,6 +66,7 @@ typedef enum {
 	notIngateNotReadyToShoot = 3,
 } ElevatorState;
 ElevatorState curElevatorState = notIngateNotReadyToShoot;
+float aimElevatorSpeed = 0;
 
 // --- Auto Making Constants ---
 // Starting Positions for match play (LCD uses them)

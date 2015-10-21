@@ -5,45 +5,57 @@ void runShooterAt(int power) {
 	motor[shooter4] = power;
 }
 
+int loops =0;
 bool pressed = false;
+bool holdPower = false;
 int curPower = 0;
 int offset = 0;
 void checkAndFindSpeed() {
+	if (vexRT[Btn6UXmtr2] &&!pressed) {
+		offset += 5;
+		pressed = true;
+	}else if (vexRT[Btn6DXmtr2] && !pressed) {
+		offset -= 5;
+		pressed = true;
+	}else {
+		pressed = false;
+	}
 	if (vexRT[Btn7DXmtr2]){
-		aimShooterSpeed = 475;
+		aimShooterSpeed = 345; // Up Close
 		//aimShooterSpeed = -.25;
 		}else if( vexRT[Btn7LXmtr2] ){
-		aimShooterSpeed = 485;
+		aimShooterSpeed = 409; // Up Close Robot
 		//aimShooterSpeed = -.6; //.5600
 		}else if( vexRT[Btn7RXmtr2] ){
-		aimShooterSpeed = 500;
+		aimShooterSpeed = 440; // Cross
 		//aimShooterSpeed = -.75; //.7200
 		}else if( vexRT[Btn7UXmtr2] ){
 		//aimShooterSpeed = -.85;
-		aimShooterSpeed = 530;
+		aimShooterSpeed = 465; // Cross Robot
 		//shoot();
+		}else if( vexRT[Btn8DXmtr2]) {
+			aimShooterSpeed = 520; // FULL COURT
+		}else if( vexRT[Btn8UXmtr2]) {
 		}else {
 			aimShooterSpeed = 0;
+			offset = 0;
+			loops = 0;
 		}
-
-	if(vexRT[Btn5DXmtr2]) {
-		offset--;
-		pressed = true;
-		}else if(vexRT[Btn5UXmtr2]) {
-	 offset++;
-	 pressed = true;
-		}else if( vexRT[Btn8UXmtr2] ) {
-		curPower = 80;
-		pressed = false;
-		}else {
-		pressed = false;
-		curPower = 0;
-		offset = 0;
-	}
+		loops++;
 }
 
 void shoot() {
-	shooterSpeed += (float)PIDRun( shooterConstantPID, (float)aimShooterSpeed - (float)currentVelocity );
+	//if (currentVelocity > aimShooterSpeed - 75) {
+	shooterSpeed += (float)PIDRun( shooterConstantPID, (float)(aimShooterSpeed + offset) - (float)currentVelocity );
+	//}else {
+	//shooterSpeed += (float)PIDRun( shooterConstantPID, (float)(aimShooterSpeed + offset) - (float)currentVelocity );
+	//}
+
+	if (shooterSpeed >127) {
+		shooterSpeed = 127;
+	}else if (shooterSpeed < -127) {
+		shooterSpeed = -127;
+	}
 	/*if(currentVelocity < (aimShooterSpeed - 90) ) {
 	runShooterAt(90);
 	char inFormat[32];
@@ -54,17 +66,16 @@ void shoot() {
 	}*/
 	if(aimShooterSpeed != 0) {
 		shooting = true;
-		if (currentVelocity < pastShooter - 100) {
-
-		}
 		char inFormat[32];
-		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,%3.3f, %3.3f", currentVelocity, aimShooterSpeed, shooterSpeed, curElevatorState, motor[elevator2]);
+		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,%3.3f, %3.3f", currentVelocity, aimShooterSpeed + offset, shooterSpeed, curElevatorState, motor[elevator2]);
 		writeDebugStreamLine(inFormat);
 		sendString(uartOne, inFormat);
 		runShooterAt(shooterSpeed);
 		}else if (curPower != 0) {
 		runShooterAt(curPower + offset);
-	}else {
+	}else if(holdPower) {
+		runShooterAt(20);
+	}else{
 		shooting = false;
 		shooterSpeed = 0;
 		runShooterAt(0);
@@ -72,12 +83,14 @@ void shoot() {
 }
 
 task shooterTask() {
-	PIDInit(shooterQuickPID, 1, 0, 0);
-	PIDInit(shooterConstantPID, .0152, .000099,.78);
+	PIDInit(shooterQuickPID, .04, 0, 1);
+	PIDInit(shooterConstantPID, .06,.000099, .81); // .152, .000099 .78; .06, .000099, .81
 	PIDSetIntegralLimit(shooterQuickPID, 127);
 	bool timerStarted = false;
 	//runShooterAt(127);
 	//wait1Msec(5000);
+	pastShooter = nMotorEncoder[shooter1];
+	PIDResetIntegral(shooterConstantPID);
 	while(true) {
 		clearTimer(T1);
 		// Negative to compensate for polarity
@@ -99,8 +112,9 @@ task shooterTask() {
 		}*/
 
 
-		if ( abs(currentVelocity) < ( abs(aimShooterSpeed) + 16) && abs(currentVelocity) > ( abs(aimShooterSpeed) - 16 ) ) {
-			if (timerStarted && time1[T3] > 2000) {
+		if ( abs(currentVelocity) < ( abs(aimShooterSpeed) + 26) && abs(currentVelocity) > ( abs(aimShooterSpeed) - 26 ) ) {
+			if (timerStarted && time1[T3] > 150) {
+				bLCDBacklight = true;
 				shooterIsReady = true;
 			}else if(!timerStarted) {
 				clearTimer(T3);
@@ -108,6 +122,7 @@ task shooterTask() {
 			}else {	}
 		}else {
 			timerStarted = false;
+			bLCDBacklight = false;
 			shooterIsReady = false;
 		}
 		pastShooter = curEn;
