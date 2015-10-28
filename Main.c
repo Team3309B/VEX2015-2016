@@ -106,7 +106,9 @@ task usercontrol() {
 	while(true) {
 
 		displayLCDCenteredString(0, "Hello");
-
+		short x = getChar(uartTwo);
+		char y = x;
+		writeDebugStreamLine("w %c", y);
 
 		if(SensorValue(gyroButton) || vexRT[Btn8U]) {
 			resetGyro();

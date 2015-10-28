@@ -21,7 +21,7 @@ void checkAndFindSpeed() {
 		pressed = false;
 	}
 	if (vexRT[Btn7DXmtr2]){
-		aimShooterSpeed = 345; // Up Close
+		aimShooterSpeed = 335; // Up Close
 		//aimShooterSpeed = -.25;
 		}else if( vexRT[Btn7LXmtr2] ){
 		aimShooterSpeed = 409; // Up Close Robot
@@ -84,7 +84,7 @@ void shoot() {
 
 task shooterTask() {
 	PIDInit(shooterQuickPID, .04, 0, 1);
-	PIDInit(shooterConstantPID, .06,.000099, .81); // .152, .000099 .78; .06, .000099, .81
+	PIDInit(shooterConstantPID, .03, 0, .4); // .152, .000099 .78; .06, .000099, .81
 	PIDSetIntegralLimit(shooterQuickPID, 127);
 	bool timerStarted = false;
 	//runShooterAt(127);
