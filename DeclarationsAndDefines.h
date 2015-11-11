@@ -45,6 +45,7 @@ float oldWheel = 0.0;
 float aimShooterSpeed = 0;
 float shooterSpeed = 0;
 float currentVelocity = 0;
+float currentAcceleration = 0;
 float previousShooterVelocity = 0;
 float pastShooter;
 bool shooting = false;

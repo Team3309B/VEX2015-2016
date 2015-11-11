@@ -21,7 +21,7 @@ void checkAndFindSpeed() {
 		pressed = false;
 	}
 	if (vexRT[Btn7DXmtr2]){
-		aimShooterSpeed = 335; // Up Close
+		aimShooterSpeed = 350; // Up Close
 		//aimShooterSpeed = -.25;
 		}else if( vexRT[Btn7LXmtr2] ){
 		aimShooterSpeed = 409; // Up Close Robot
@@ -43,35 +43,107 @@ void checkAndFindSpeed() {
 		}
 		loops++;
 }
-
+/*
+float TBHSpeed = 0;
+float error = 0;
+float lastError = 0;
+float  TBHSpeed_at_zero = 0;
+float TBHSpeed_approx = 40;
+float firstCross = 1;*/
+float lastVel = 0;
+float lastError = 0;
+float aimBuildUp = 0;
+float maxVel = 550;
+float maxAcc = 30;
+float kV = (1/maxVel)/2;
+float kA = (1/maxAcc)/50;
+float aimVel;
+float aimAcc;
 void shoot() {
-	//if (currentVelocity > aimShooterSpeed - 75) {
-	shooterSpeed += (float)PIDRun( shooterConstantPID, (float)(aimShooterSpeed + offset) - (float)currentVelocity );
-	//}else {
-	//shooterSpeed += (float)PIDRun( shooterConstantPID, (float)(aimShooterSpeed + offset) - (float)currentVelocity );
-	//}
+	if(currentVelocity < aimShooterSpeed - 20) {
+		if (aimVel < aimShooterSpeed) {
+			aimAcc = maxAcc;
+			aimVel = currentVelocity + maxAcc;
+		}else {
+			aimAcc = maxAcc/4;
+			aimVel = aimShooterSpeed;
+		}
+		aimAcc = maxAcc;
+	}
+	else if(currentVelocity > aimShooterSpeed + 20){
+		if(aimVel > aimShooterSpeed) {
+			aimAcc = -maxAcc;
+			aimVel = currentVelocity - maxAcc;
+		}else {
+			aimVel =  aimShooterSpeed;
+			aimAcc = -maxAcc/4;
+		}
+	}
+	else
+	{
+		aimVel = aimShooterSpeed;
+		aimAcc = 0;
+	}
+
+	float temp = (float)PIDRun( shooterConstantPID, (float)(aimVel + offset) - (float)currentVelocity );
+	shooterSpeed = 127*(kV * aimVel)+ 127*(kA * aimAcc) + temp;
+	if(currentVelocity < aimShooterSpeed - 40 && shooterSpeed < (127*(aimShooterSpeed * kV) + 127*(kA * aimAcc)) - 10)
+	{
+		shooterSpeed = 127;
+	}
+	lastError = shooterSpeed;
 
 	if (shooterSpeed >127) {
 		shooterSpeed = 127;
 	}else if (shooterSpeed < -127) {
 		shooterSpeed = -127;
 	}
-	/*if(currentVelocity < (aimShooterSpeed - 90) ) {
-	runShooterAt(90);
-	char inFormat[32];
-	sprintf(inFormat, "%3.3f,%3.3f,%3.3f,", currentVelocity, aimShooterSpeed, 127);
-	writeDebugStreamLine(inFormat);
-	sendString(uartOne, inFormat);
-	return;
-	}*/
 	if(aimShooterSpeed != 0) {
 		shooting = true;
 		char inFormat[32];
-		sprintf(inFormat, "%3.3f,%3.3f,%3.3f,%3.3f, %3.3f", currentVelocity, aimShooterSpeed + offset, shooterSpeed, curElevatorState, motor[elevator2]);
+		sprintf(inFormat, "%3.0f,%3.0f,%3.0f,%3.0f,%3.0f,%3.0f", currentVelocity, aimVel + offset, shooterSpeed, 127*(aimVel * kV), 127*(aimAcc * kA), temp);
 		writeDebugStreamLine(inFormat);
 		sendString(uartOne, inFormat);
-		runShooterAt(shooterSpeed);
-		}else if (curPower != 0) {
+
+	runShooterAt(shooterSpeed);
+	//runShooterAt(127);
+		/*
+		// -=----TBH =====---
+		// calculate error in velocity
+    // target is desired velocity
+    // current is measured velocity
+    error = aimShooterSpeed - currentVelocity;
+
+    // Use Kp as gain
+    TBHSpeed =  TBHSpeed + (error * .0008);
+
+    // Clip - we are only going forwards
+    if( TBHSpeed > 127 )
+          TBHSpeed = 127;
+    if( TBHSpeed < 0 )
+          TBHSpeed = 0;
+
+    // Check for zero crossing
+    if( sgn(error) != sgn(lastError) ) {
+        // First zero crossing after a new set velocity command
+        if( firstCross ) {
+            // Set drive to the open loop approximation
+            TBHSpeed = TBHSpeed_approx;
+            firstCross = 0;
+        }
+        else {
+            TBHSpeed = 0.5 * ( TBHSpeed + TBHSpeed_at_zero );
+          }
+
+        // Save this drive value in the "tbh" variable
+        TBHSpeed_at_zero = TBHSpeed;
+    }
+		runShooterAt(TBHSpeed);
+    // Save last error
+    lastError = error;
+    */
+
+	}else if (curPower != 0) {
 		runShooterAt(curPower + offset);
 	}else if(holdPower) {
 		runShooterAt(20);
@@ -83,8 +155,8 @@ void shoot() {
 }
 
 task shooterTask() {
-	PIDInit(shooterQuickPID, .04, 0, 1);
-	PIDInit(shooterConstantPID, .03, 0, .4); // .152, .000099 .78; .06, .000099, .81
+	PIDInit(shooterQuickPID, 1, 0, .5); // .03 0 .75
+	PIDInit(shooterConstantPID, .6, .08, .03); // .01 .001 .4
 	PIDSetIntegralLimit(shooterQuickPID, 127);
 	bool timerStarted = false;
 	//runShooterAt(127);
@@ -96,6 +168,7 @@ task shooterTask() {
 		// Negative to compensate for polarity
 		float curEn = ((float)nMotorEncoder[shooter1]);
 		currentVelocity = -((float)((float)curEn - (float)pastShooter)/((float)shooterEquationDelayAmount)) * 10.0 * 60.0; // gets in rpm
+		currentAcceleration = currentVelocity - previousShooterVelocity;
 		checkAndFindSpeed();
 		shoot();
 

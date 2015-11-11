@@ -42,7 +42,9 @@ task elevatorTask() {
 				setElevator(currentPIDValue);
 				writeDebugStreamLine("%4.4f, %4.4f, %4.4f", aimElevatorSpeed, error, currentPIDValue);
 		} else {
-		if (abs(vexRT[Ch3Xmtr2]) > 20) {
+		if (vexRT[Btn5D]) {
+			setElevator(127);
+		}else if (abs(vexRT[Ch3Xmtr2]) > 20) {
 				setElevator(vexRT[Ch3Xmtr2]);
 		}else {
 			setElevator(0);

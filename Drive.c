@@ -131,7 +131,7 @@ void chezyDrive(float throttle, float wheel, bool isQuickTurn) {
     float negInertiaScalar;
 
       if (wheel * negInertia > 0.0) {
-        negInertiaScalar = 2.5;
+        negInertiaScalar = 1.5;
       } else {
         if (abs(wheel) > 0.65) {
           negInertiaScalar = 5.0;
@@ -234,34 +234,13 @@ task driveTask() {
 	bool isFirstTimePressed = true;
 	int lockedAngle = 0;
 	while(true) {
-		if (vexRT[Btn7D]) {
-			// Hold Pos
-			if (isFirstTimePressed) {
-				isFirstTimePressed = false;
-				PIDInit(holdAnglePID, .8, 0);
-				PIDInit(holdEnPID, .8, 0);
-				lockedAngle = SensorValue[gyro];
-				SensorValue[rightDriveTrain] = 0;
-				SensorValue[leftDriveTrain] = 0;
 
-			}
-			setRightDrive(PIDRun(holdEnPID, 0 + SensorValue[rightDriveTrain]) + PIDRun(holdAnglePID, lockedAngle - SensorValue[gyro]));
-			setLeftDrive(PIDRun(holdEnPID, 0 + SensorValue[leftDriveTrain]) - PIDRun(holdAnglePID, lockedAngle - SensorValue[gyro]));
-
-		}else if(vexRT[Btn8D]){
-			if (isFirstTimePressed) {
-				isFirstTimePressed = false;
-				lockedAngle = SensorValue[gyro];
-			}
-			workToHoldAngle(lockedAngle);
-		}else {
 			float toSend = ((float)vexRT[Ch3])/127;
 			float toSendTurn = ((float)vexRT[Ch1])/127;
 			chezyDrive((float)(toSend), (float)(toSendTurn), vexRT[Btn5U]);
 			isFirstTimePressed = true;
 			//lameDrive();
 			//driveHalo( threshold(vexRT[Ch3], 10), threshold(vexRT[Ch1], 10) );
-		}
 		//wait1Msec(driveEquationDelayAmount);
 	}
 }

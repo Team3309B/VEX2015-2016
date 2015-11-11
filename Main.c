@@ -13,7 +13,7 @@
 #pragma config(Motor,  port1,           intake,        tmotorVex393_HBridge, openLoop)
 #pragma config(Motor,  port2,           shooter1,      tmotorVex393TurboSpeed_MC29, openLoop, reversed, encoderPort, I2C_1)
 #pragma config(Motor,  port3,           shooter2,      tmotorVex393_MC29, openLoop)
-#pragma config(Motor,  port4,           rightDriveExtra, tmotorVex393_MC29, openLoop)
+#pragma config(Motor,  port4,           rightDriveExtra, tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port5,           leftDriveExtra, tmotorVex393_MC29, openLoop)
 #pragma config(Motor,  port6,           rightDrive,    tmotorVex393_MC29, openLoop, reversed)
 #pragma config(Motor,  port7,           leftDrive,     tmotorVex393_MC29, openLoop)
