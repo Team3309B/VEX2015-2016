@@ -53,7 +53,7 @@ int threshold( int value, int thresh) {
 #include "Elevator.c"
 #include "Lift.c"
 
-#include "LCDTask.c"
+#include "LCDAuto.c"
 
 #include "Auto.c"
 #include "MiscFunctions.c"
@@ -68,7 +68,7 @@ void pre_auton() {
 // Ran in Auto
 task autonomous() {
 	isAuto = true;
-	//startBallTasks();
+//	startBallTasks();
 	// Reset Encoders and then run the begin auto method found in AUTO.c
 	resetEn();
 	writeDebugStreamLine("AUTO");
@@ -83,10 +83,7 @@ task usercontrol() {
 	nMotorEncoder[rightDrive] = 0;
 	nMotorEncoder[leftDrive] = 0;
 	clearTimer(T2);
-
-	// Start up the LCD
-	//LCDInit();
-	//startTask( runLCD );
+	startTask( runLCD );
 
 	writeDebugStreamLine("IT STARTED");
 
@@ -94,7 +91,6 @@ task usercontrol() {
 	initSensors();
 	resetEn();
 	writeDebugStreamLine("ABOUT TO RESET GYRO");
-
 
 	writeDebugStreamLine("I FINISHED");
 	//Start the tasks that control each aspect of the robot
@@ -105,20 +101,15 @@ task usercontrol() {
 
 	while(true) {
 
-		displayLCDCenteredString(0, "Hello");
 		short x = getChar(uartTwo);
 		char y = x;
 		writeDebugStreamLine("w %c", y);
 
-		if(SensorValue(gyroButton) || vexRT[Btn8U]) {
+		if(vexRT[Btn8U]) {
 			resetGyro();
 		}else if(SensorValue(encoderButton)) {
 			resetEn();
 		}
-		// Toggle for switching modes between climbing and shooting
-		/*if ( isTapped(ButtonP8L) ) {
-		shiftModes();
-		}*/
 		wait1Msec(250);
 	}
 }

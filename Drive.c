@@ -1,5 +1,7 @@
 
-PID positionEncoder;
+PID rightPositionEncoder;
+PID leftPositionEncoder;
+PID turningPID;
 void setLeftDrive(int x) {
 	motor[leftDrive] = x;
 	motor[leftDriveExtra] = x;
@@ -36,17 +38,24 @@ void moveForward(int encoders) {
 void moveForwardPID(int encoder) {
 	SensorValue(rightDriveTrain) = 0;
 	SensorValue(leftDriveTrain) = 0;
-	PIDInit(positionEncoder, .1, 0.01);
+	PIDInit(leftPositionEncoder, .13, .001, 0.1);
+	PIDInit(rightPositionEncoder, .13, .001, 0.1);
+	PIDInit(turningPID, .08, .01);
 	bool running = true;
 	bool timerStarted = false;
-	float driveSpeed = 0;
+	float rightSpeed = 0, leftSpeed = 0;
+	float turnSpeed = 0;
+	float aimGyro = SensorValue[gyro];
 	while(running) {
 		float currentEn = (abs(SensorValue(rightDriveTrain)) + abs(SensorValue(leftDriveTrain)))/2;
-		driveSpeed = PIDRun(positionEncoder, encoder - currentEn);
-		runDriveAt(driveSpeed);
+		leftSpeed = PIDRun(leftPositionEncoder, (encoder) - abs(SensorValue(leftDriveTrain)));
+		rightSpeed = PIDRun(rightPositionEncoder, (encoder) -  abs(SensorValue(rightDriveTrain)));
+		turnSpeed = PIDRun(turningPID, aimGyro - SensorValue[gyro]);
+		setLeftDrive(leftSpeed + turnSpeed);
+		setRightDrive(leftSpeed - turnSpeed);
 		//writeDebugStreamLine("RIGHT: %4.4f, LEFHT: %4.4f", SensorValue(rightDriveTrain), SensorValue(leftDriveTrain));
-		writeDebugStreamLine("cur: %4.4f , pow: %4.4f aoim: %4.4f", currentEn, driveSpeed, encoder);
-		if (currentEn > encoder - 50 && currentEn < encoder + 50 && !timerStarted) {
+		//writeDebugStreamLine("cur: %4.4f , pow: %4.4f aoim: %4.4f", currentEn, driveSpeed, encoder);
+		if (abs(SensorValue(leftDriveTrain)) > encoder - 100 && abs(SensorValue(leftDriveTrain)) < encoder + 100 && !timerStarted) {
 			clearTimer(T4);
 			timerStarted = true;
 		}else if (timerStarted) {
@@ -54,7 +63,43 @@ void moveForwardPID(int encoder) {
 		}else {
 			timerStarted = false;
 		}
-		if (timerStarted && time1[T4] > 500) {
+		if (timerStarted && time1[T4] > 100) {
+				running = false;
+		}
+		wait1Msec(150);
+	}
+	writeDebugStreamLine("DONE");
+}
+
+void moveForwardPID(int encoder, int power) {
+	SensorValue(rightDriveTrain) = 0;
+	SensorValue(leftDriveTrain) = 0;
+	PIDInit(leftPositionEncoder, .13, .001, 0.1);
+	PIDInit(rightPositionEncoder, .13, .001, 0.1);
+	PIDInit(turningPID, .1, .01);
+	bool running = true;
+	bool timerStarted = false;
+	float rightSpeed = 0, leftSpeed = 0;
+	float turnSpeed = 0;
+	float aimGyro = SensorValue[gyro];
+	while(running) {
+		float currentEn = (abs(SensorValue(rightDriveTrain)) + abs(SensorValue(leftDriveTrain)))/2;
+		leftSpeed = PIDRun(leftPositionEncoder, (encoder) - abs(SensorValue(leftDriveTrain)));
+		rightSpeed = PIDRun(rightPositionEncoder, (encoder) -  abs(SensorValue(rightDriveTrain)));
+		turnSpeed = PIDRun(turningPID, aimGyro - SensorValue[gyro]);
+		setLeftDrive(power + turnSpeed);
+		setRightDrive(power - turnSpeed);
+		//writeDebugStreamLine("RIGHT: %4.4f, LEFHT: %4.4f", SensorValue(rightDriveTrain), SensorValue(leftDriveTrain));
+		//writeDebugStreamLine("cur: %4.4f , pow: %4.4f aoim: %4.4f", currentEn, driveSpeed, encoder);
+		if (abs(SensorValue(leftDriveTrain)) > encoder - 100 && abs(SensorValue(leftDriveTrain)) < encoder + 100 && !timerStarted) {
+			clearTimer(T4);
+			timerStarted = true;
+		}else if (timerStarted) {
+
+		}else {
+			timerStarted = false;
+		}
+		if (timerStarted && time1[T4] > 100) {
 				running = false;
 		}
 		wait1Msec(150);
@@ -72,7 +117,7 @@ void workToHoldAngle(int desAngle) {
 
 
 void turnToAngle(int desAngle) {
-		PIDInit(gyroTurning, .2, .095);
+		PIDInit(gyroTurning, .1, .01, .07);
 	bool running = true;
 	bool timerStarted = false;
 	while(running) {
@@ -85,7 +130,7 @@ void turnToAngle(int desAngle) {
 		}else {
 			timerStarted = false;
 		}
-		if (timerStarted && time1[T4] > 500) {
+		if (timerStarted && time1[T4] > 100) {
 				running = false;
 		}
 		wait1Msec(150);
@@ -227,7 +272,6 @@ task driveTask() {
 	PIDInit(gyroDrivePID, .19, .09);
 	PIDInit(driveRightDrivePID, .41,.1);
 	PIDInit(driveLeftDrivePID, .41, .1);
-	PIDInit(positionEncoder, .1, 0.0);
 	PIDInit(holdAnglePID, .2, .095);
 	PIDInit(holdEnPID, .8, 0);
 	PIDInit(gyroTurning, .2, .095);

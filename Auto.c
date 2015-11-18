@@ -1,34 +1,42 @@
-float shooterSpeedAuto = 0;
-float aimShooterSpeedAuto = 610;
 task shooterAuto() {
-	PIDInit(shooterConstantPID, .06, .000099,.81); // .152, .000099 .78
+	PIDInit(shooterQuickPID, 1, 0, .5); // .03 0 .75
+	PIDInit(shooterConstantPID, .6, .08, .03); // .01 .001 .4
+	PIDSetIntegralLimit(shooterQuickPID, 127);
 	bool timerStarted = false;
+	//runShooterAt(127);
+	//wait1Msec(5000);
+	pastShooter = nMotorEncoder[shooter1];
+	PIDResetIntegral(shooterConstantPID);
 	while(true) {
-		float curEn = (float) nMotorEncoder[shooter1];
-		currentVelocity = -((float)((float)curEn - (float)pastShooter)/((float)shooterEquationDelayAmount)) * 10.0 * 60.0;
-		shooterSpeedAuto += PIDRun(shooterConstantPID, aimShooterSpeedAuto - currentVelocity);
-		runShooterAt(shooterSpeedAuto);
-		pastShooter = curEn;
-
-		if ( abs(currentVelocity) < ( abs(aimShooterSpeedAuto) + 26) && abs(currentVelocity) > ( abs(aimShooterSpeedAuto) - 26 ) ) {
+		clearTimer(T1);
+		// Negative to compensate for polarity
+		float curEn = ((float)nMotorEncoder[shooter1]);
+		currentVelocity = -((float)((float)curEn - (float)pastShooter)/((float)shooterEquationDelayAmount)) * 10.0 * 60.0; // gets in rpm
+		currentAcceleration = currentVelocity - previousShooterVelocity;
+		shoot();
+		if ( abs(currentVelocity) < ( abs(aimShooterSpeed) + 26) && abs(currentVelocity) > ( abs(aimShooterSpeed) - 26 ) ) {
 			if (timerStarted && time1[T3] > 150) {
 				bLCDBacklight = true;
 				shooterIsReady = true;
-				}else if(!timerStarted) {
+			}else if(!timerStarted) {
 				clearTimer(T3);
 				timerStarted = true;
 			}else {	}
-			}else {
+		}else {
 			timerStarted = false;
 			bLCDBacklight = false;
 			shooterIsReady = false;
 		}
-		wait1Msec(shooterEquationDelayAmount);
+		pastShooter = curEn;
+		previousShooterVelocity = currentVelocity;
+		if (time1[T1] < shooterEquationDelayAmount) {
+			wait1Msec(shooterEquationDelayAmount - time1[T1]);
+		}
 	}
 }
 
 void shootAtCrossUpCloseShot() {
-	aimShooterSpeedAuto = 460; // Cross Shot
+	aimShooterSpeed = 460; // Cross Shot
 	startTask(shooterAuto);
 	moveForwardPID(500); // Move Forward Some
 	turnToAngle(450); // Turn
@@ -43,7 +51,7 @@ void shootAtCrossUpCloseShot() {
 	stopTask(shooterAuto);
 	moveForwardPID(3000);
 
-	aimShooterSpeedAuto = 437;
+	aimShooterSpeed = 437;
 	startTask(shooterAuto);
 
 	runDriveAt(50);
@@ -53,8 +61,9 @@ void shootAtCrossUpCloseShot() {
 
 void shootPreloadsFor(int time) {
 
-	aimShooterSpeedAuto = 450; // Cross Shot
-	startTask(shooterAuto);
+	//aimShooterSpeed = 450; // Cross Shot
+	//startTask(shooterAuto);
+	runShooterAt(127);
 	clearTimer(T1);
 	wait1Msec(3500);
 	setElevator(127);// shoot first ball
@@ -68,14 +77,16 @@ void shootPreloadsFor(int time) {
 	wait1Msec(3000);
 	//setElevator(0);
 	//motor[intake] = 0;
-	stopTask(shooterAuto);
+//	stopTask(shooterAuto);
 	//moveForwardPID(2700);
+	runShooterAt(0);
+	setElevator(0);
 	stopDrive();
 
 }
 
 void shootAtCross() {
-	aimShooterSpeedAuto = 460; // Cross Shot
+	aimShooterSpeed = 460; // Cross Shot
 	startTask(shooterAuto);
 	moveForwardPID(200); // Move Forward Some
 	turnToAngle(1000); // Turn
@@ -87,11 +98,86 @@ void shootAtCross() {
 
 void programmingSkills() {
 
-	aimShooterSpeedAuto = 440;
-	startTask(shooterAuto);
+	runShooterAt(127);
 	wait1Msec(4000);
 	setElevator(127);
 	motor[intake] = 127;
+}
+
+void leftCrossAndPole() {
+	startTask(shooterAuto);
+
+
+	moveForwardPID(170);
+	wait1Msec(100);
+	turnToAngle(-420);
+
+	wait1Msec(100);
+	moveForwardPID(1220);
+	aimShooterSpeed = 415;
+	wait1Msec(400);
+	turnToAngle(100);
+	wait1Msec(400);
+	moveForwardPID(700);
+	wait1Msec(400);
+	turnToAngle(-430);
+	wait1Msec(401);
+	moveForwardPID(520);
+
+	//shoot
+	motor[elevator2] = 100;
+
+	motor[intake] = 127;
+	wait1Msec(3000);
+	motor[elevator2] = 127;
+
+	//intaking
+	//elevator
+	aimShooterSpeed = 350;
+	moveForwardPID(1220, 35);
+	motor[elevator2] = 127;
+}
+
+void rightCrossAndPole() {
+	startTask(shooterAuto);
+
+
+	moveForwardPID(170);
+	wait1Msec(100);
+	turnToAngle(420);
+
+	wait1Msec(100);
+	moveForwardPID(1220);
+	aimShooterSpeed = 415;
+	wait1Msec(400);
+	turnToAngle(-100);
+	wait1Msec(400);
+	moveForwardPID(700);
+	wait1Msec(400);
+	turnToAngle(	430);
+	wait1Msec(401);
+	moveForwardPID(520);
+
+	//shoot
+	motor[elevator2] = 100;
+
+	motor[intake] = 127;
+	wait1Msec(3000);
+	motor[elevator2] = 127;
+
+	//intaking
+	//elevator
+	aimShooterSpeed = 350;
+	moveForwardPID(1220, 35);
+	motor[elevator2] = 127;
+}
+
+void getSideStackRight() {
+
+}
+
+void getSideStackLeft() {
+
 }
 
 void D986Auto() {
@@ -101,12 +187,40 @@ void D986Auto() {
 	setElevator(0);
 	motor[intake] = 0;
 }
-void startauton()
-{
-	//moveForwardPID(1500);
-	//shootAtCrossUpCloseShot();
-	shootPreloadsFor(6000);
-	//programmingSkills();
-	//D986Auto();
-	// shootAtCross();
+
+void startauton() {
+
+	//Clear LCD
+	clearLCDLine(0);
+	clearLCDLine(1);
+	//Switch Case that actually runs the user choice
+	//this switch case chooses the auto to run based off of the LCD Screen's choice
+	//to see how count is choosen, reference LCDAuto.c
+	switch(count){
+	case 0:
+		wait1Msec(15000);
+		break;
+	case 1:
+		shootPreloadsFor(6000);
+		break;
+	case 2:
+		rightCrossAndPole();
+		break;
+	case 3:
+		leftCrossAndPole();
+		break;
+	case 4:
+		getSideStackLeft()
+		break;
+	case 5:
+		getSideStackRightt()
+		break;
+	case 6:
+		D986Auto();
+		break;
+	default:
+		displayLCDCenteredString(0, "No valid choice");
+		displayLCDCenteredString(1, "was made!");
+		break;
+	}
 }
