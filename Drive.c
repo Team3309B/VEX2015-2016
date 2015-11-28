@@ -82,7 +82,9 @@ void moveForwardPID(int encoder, int power) {
 	float rightSpeed = 0, leftSpeed = 0;
 	float turnSpeed = 0;
 	float aimGyro = SensorValue[gyro];
+		clearTimer(T3);
 	while(running) {
+
 		float currentEn = (abs(SensorValue(rightDriveTrain)) + abs(SensorValue(leftDriveTrain)))/2;
 		leftSpeed = PIDRun(leftPositionEncoder, (encoder) - abs(SensorValue(leftDriveTrain)));
 		rightSpeed = PIDRun(rightPositionEncoder, (encoder) -  abs(SensorValue(rightDriveTrain)));
@@ -102,6 +104,9 @@ void moveForwardPID(int encoder, int power) {
 		if (timerStarted && time1[T4] > 100) {
 				running = false;
 		}
+		if (time1[T3] > 3000) {
+			return;
+		}
 		wait1Msec(150);
 	}
 	writeDebugStreamLine("DONE");
@@ -117,12 +122,12 @@ void workToHoldAngle(int desAngle) {
 
 
 void turnToAngle(int desAngle) {
-		PIDInit(gyroTurning, .1, .01, .07);
+		PIDInit(gyroTurning, .1, .04, .07);
 	bool running = true;
 	bool timerStarted = false;
 	while(running) {
 		workToHoldAngle(desAngle);
-		if (SensorValue[gyro] > desAngle - 50 && SensorValue[gyro] < desAngle + 50 && !timerStarted) {
+		if (SensorValue[gyro] > desAngle - 150 && SensorValue[gyro] < desAngle + 150 && !timerStarted) {
 			clearTimer(T4);
 			timerStarted = true;
 		}else if (timerStarted) {

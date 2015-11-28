@@ -29,10 +29,10 @@ void checkAndFindSpeed() {
 		pressed = false;
 	}
 	if (vexRT[Btn7DXmtr2]){
-		aimShooterSpeed = 343; // Up Close
+		aimShooterSpeed = 350; // Up Close
 		//aimShooterSpeed = -.25;
 		}else if( vexRT[Btn7LXmtr2] ){
-		aimShooterSpeed = 380; // Up Close Robot
+		aimShooterSpeed = 360; // Up Close Robot
 		//aimShooterSpeed = -.6; //.5600
 		}else if( vexRT[Btn7RXmtr2] ){
 		aimShooterSpeed = 440; // Cross

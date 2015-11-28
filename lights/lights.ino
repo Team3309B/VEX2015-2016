@@ -4,7 +4,7 @@
 #endif
 
 #define PIN 6
-#define BLUE
+#define RED
 
 double percentForShooter = 0.0;
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(70, PIN, NEO_GRB + NEO_KHZ800);

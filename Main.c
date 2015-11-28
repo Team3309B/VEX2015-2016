@@ -67,6 +67,9 @@ void pre_auton() {
 
 // Ran in Auto
 task autonomous() {
+	if(!bSoundActive) {
+		playSoundFile("1.wav");
+	}
 	isAuto = true;
 //	startBallTasks();
 	// Reset Encoders and then run the begin auto method found in AUTO.c
@@ -105,6 +108,9 @@ task usercontrol() {
 		char y = x;
 		writeDebugStreamLine("w %c", y);
 
+		if( vexRT[Btn7L] && !bSoundActive) {
+			playSoundFile("4.wav");
+		}
 		if(vexRT[Btn8U]) {
 			resetGyro();
 		}else if(SensorValue(encoderButton)) {

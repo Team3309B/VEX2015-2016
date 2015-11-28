@@ -104,7 +104,7 @@ void programmingSkills() {
 	motor[intake] = 127;
 }
 
-void leftCrossAndPole() {
+void rightCrossAndPole() {
 	startTask(shooterAuto);
 
 
@@ -138,7 +138,7 @@ void leftCrossAndPole() {
 	motor[elevator2] = 127;
 }
 
-void rightCrossAndPole() {
+void leftCrossAndPole() {
 	startTask(shooterAuto);
 
 
@@ -178,6 +178,25 @@ void getSideStackRight() {
 
 void getSideStackLeft() {
 
+
+	runShooterAt(127);
+	moveForwardPID(170);
+	wait1Msec(100);
+	turnToAngle(370);
+	wait1Msec(500);
+	motor[elevator2] = 85;
+	wait1Msec(1000);
+	motor[intake] = 127;
+	wait1Msec(2500);
+	motor[elevator2] = 0;
+	runShooterAt(0);
+
+	startTask(shooterAuto);
+	moveForwardPID(1200);
+	turnToAngle(20000);
+	motor[intake] = 127;
+	moveForwardPID(700);
+
 }
 
 void D986Auto() {
@@ -213,7 +232,7 @@ void startauton() {
 		getSideStackLeft()
 		break;
 	case 5:
-		getSideStackRightt()
+		getSideStackRight()
 		break;
 	case 6:
 		D986Auto();
