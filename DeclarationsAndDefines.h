@@ -22,13 +22,14 @@ bool isBallMode = true; // Keeps track of which tasks are running
 int startx = 0;
 int starty = 0;
 // Drive Equation Stuff
-float xLeft = 0;
-float yLeft = 0;
-float xRight = 0;
-float yRight = 0;
-float pastLeft = 0;
-float pastRight = 0;
+float x = 0;
+float y = 0;
+float pastLeft = SensorValue[leftDriveTrain];
+float pastRight = SensorValue[rightDriveTrain];
 float pastGyro = SensorValue[gyro];
+float leftDriveVelocity = 0;
+float rightDriveVelocity = 0;
+float gyroAngularVelocity = 0;
 #define driveEquationDelayAmount 150 //Amount delayed between each loop of drive equation
 #define MAX_ANG_VEL 1.8 // Max Turning Speed
 #define MAX_VEL .6 // Max Forward Velocity

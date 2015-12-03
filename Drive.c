@@ -143,6 +143,11 @@ void turnToAngle(int desAngle) {
 	writeDebugStreamLine("DONE");
 }
 
+void goTo(float xGoal, float yGoal) {
+	float deltaY = yGoal - y;
+	float deltaX = xGoal - x;
+	float angle = atan2(deltaY/deltaX);
+}
 
 float limit(float v, float limit) {
     return (abs(v) < limit) ? v : limit * (v < 0 ? -1 : 1);
