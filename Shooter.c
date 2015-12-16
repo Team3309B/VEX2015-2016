@@ -29,17 +29,17 @@ void checkAndFindSpeed() {
 		pressed = false;
 	}
 	if (vexRT[Btn7DXmtr2]){
-		aimShooterSpeed = 350; // Up Close
+		aimShooterSpeed = 358; // Up Close
 		//aimShooterSpeed = -.25;
 		}else if( vexRT[Btn7LXmtr2] ){
-		aimShooterSpeed = 360; // Up Close Robot
+		aimShooterSpeed = 368; // Up Close Robot
 		//aimShooterSpeed = -.6; //.5600
 		}else if( vexRT[Btn7RXmtr2] ){
-		aimShooterSpeed = 440; // Cross
+		aimShooterSpeed = 448; // Cross
 		//aimShooterSpeed = -.75; //.7200
 		}else if( vexRT[Btn7UXmtr2] ){
 		//aimShooterSpeed = -.85;
-		aimShooterSpeed = 447; // Cross Robot
+		aimShooterSpeed = 457; // Cross Robot
 		//shoot();
 		}else if( vexRT[Btn8DXmtr2]) {
 			aimShooterSpeed = 540; // FULL COURT
@@ -62,9 +62,9 @@ float lastVel = 0;
 float lastError = 0;
 float aimBuildUp = 0;
 float maxVel = 550;
-float maxAcc = 30;
+float maxAcc = 50;
 float kV = (1/maxVel)/2;
-float kA = (1/maxAcc)/50;
+float kA = (1/30)/50;
 float kVFull = (1/maxVel)/1.2;
 float kAFull = (1/maxAcc)/40;
 float aimVel;
@@ -119,7 +119,7 @@ void shoot() {
 		sprintf(inFormat, "%3.0f,%3.0f,%3.0f,%3.0f,%3.0f,%3.0f", currentVelocity, aimVel + offset, shooterSpeed, 127*(aimVel * kV), 127*(aimAcc * kA), temp);
 		char percent[32];
 		//sprintf(percent, "Shoot");
-		writeDebugStreamLine(inFormat);
+		//writeDebugStreamLine(inFormat);
 		sendString(uartOne, inFormat);
 		//sendString(uartOne, percent);
 
@@ -185,6 +185,7 @@ task shooterTask() {
 		clearTimer(T1);
 		// Negative to compensate for polarity
 		float curEn = ((float)nMotorEncoder[shooter1]);
+
 		currentVelocity = -((float)((float)curEn - (float)pastShooter)/((float)shooterEquationDelayAmount)) * 10.0 * 60.0; // gets in rpm
 		currentAcceleration = currentVelocity - previousShooterVelocity;
 		checkAndFindSpeed();

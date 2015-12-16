@@ -67,6 +67,8 @@ void pre_auton() {
 
 // Ran in Auto
 task autonomous() {
+	//programmingSkills();
+	//wait1Msec(60000);
 	if(!bSoundActive) {
 		playSoundFile("1.wav");
 	}
@@ -121,13 +123,30 @@ task usercontrol() {
 		pastLeft = (float)-SensorValue[leftDrive];
 		pastGyro = (float)-SensorValue[gyro];
 
-		if( vexRT[Btn7L] && !bSoundActive) {
+		if( vexRT[Btn7D] && !bSoundActive) {
 			playSoundFile("4.wav");
 		}
 		if(vexRT[Btn8U]) {
 			resetGyro();
-		}else if(SensorValue(encoderButton)) {
+		}else if(vexRT[Btn8R]) {
 			resetEn();
+		}
+
+		if(vexRT[Btn7R]) {
+			stopTask(driveTask);
+			aimShooterSpeed = 0;
+			SensorValue[gyro] = 0;
+			moveForwardPID(270);
+			turnToAngle(-553);
+			startTask( driveTask );
+		}
+		if(vexRT[Btn7L]) {
+			stopTask(driveTask);
+			aimShooterSpeed = 0;
+			SensorValue[gyro] = 0;
+			moveForwardPID(170);
+			turnToAngle(553)
+			startTask( driveTask );
 		}
 		wait1Msec(150);
 	}

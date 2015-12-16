@@ -40,7 +40,7 @@ void moveForwardPID(int encoder) {
 	SensorValue(leftDriveTrain) = 0;
 	PIDInit(leftPositionEncoder, .13, .001, 0.1);
 	PIDInit(rightPositionEncoder, .13, .001, 0.1);
-	PIDInit(turningPID, .08, .01);
+	PIDInit(turningPID, .06, .01);
 	bool running = true;
 	bool timerStarted = false;
 	float rightSpeed = 0, leftSpeed = 0;
@@ -49,7 +49,7 @@ void moveForwardPID(int encoder) {
 	while(running) {
 		float currentEn = (abs(SensorValue(rightDriveTrain)) + abs(SensorValue(leftDriveTrain)))/2;
 		leftSpeed = PIDRun(leftPositionEncoder, (encoder) - abs(SensorValue(leftDriveTrain)));
-		rightSpeed = PIDRun(rightPositionEncoder, (encoder) -  abs(SensorValue(rightDriveTrain)));
+		rightSpeed = PIDRun(rightPositionEncoder, (encoder) -  abs(SensorValue(leftDriveTrain)));
 		turnSpeed = PIDRun(turningPID, aimGyro - SensorValue[gyro]);
 		setLeftDrive(leftSpeed + turnSpeed);
 		setRightDrive(leftSpeed - turnSpeed);
@@ -71,7 +71,7 @@ void moveForwardPID(int encoder) {
 	writeDebugStreamLine("DONE");
 }
 
-void moveForwardPID(int encoder, int power) {
+void moveForwardPID(int encoder, int power, int timeout) {
 	SensorValue(rightDriveTrain) = 0;
 	SensorValue(leftDriveTrain) = 0;
 	PIDInit(leftPositionEncoder, .13, .001, 0.1);
@@ -85,9 +85,9 @@ void moveForwardPID(int encoder, int power) {
 		clearTimer(T3);
 	while(running) {
 
-		float currentEn = (abs(SensorValue(rightDriveTrain)) + abs(SensorValue(leftDriveTrain)))/2;
+		float currentEn =  abs(SensorValue(leftDriveTrain);
 		leftSpeed = PIDRun(leftPositionEncoder, (encoder) - abs(SensorValue(leftDriveTrain)));
-		rightSpeed = PIDRun(rightPositionEncoder, (encoder) -  abs(SensorValue(rightDriveTrain)));
+		rightSpeed = PIDRun(rightPositionEncoder, (encoder) -  abs(SensorValue(leftDriveTrain)));
 		turnSpeed = PIDRun(turningPID, aimGyro - SensorValue[gyro]);
 		setLeftDrive(power + turnSpeed);
 		setRightDrive(power - turnSpeed);
@@ -104,7 +104,7 @@ void moveForwardPID(int encoder, int power) {
 		if (timerStarted && time1[T4] > 100) {
 				running = false;
 		}
-		if (time1[T3] > 3000) {
+		if (time1[T3] > timeout) {
 			return;
 		}
 		wait1Msec(150);
@@ -122,12 +122,12 @@ void workToHoldAngle(int desAngle) {
 
 
 void turnToAngle(int desAngle) {
-		PIDInit(gyroTurning, .1, .04, .07);
+		PIDInit(gyroTurning, .11, .08, .07);
 	bool running = true;
 	bool timerStarted = false;
 	while(running) {
 		workToHoldAngle(desAngle);
-		if (SensorValue[gyro] > desAngle - 150 && SensorValue[gyro] < desAngle + 150 && !timerStarted) {
+		if (SensorValue[gyro] > desAngle - 70 && SensorValue[gyro] < desAngle + 70 && !timerStarted) {
 			clearTimer(T4);
 			timerStarted = true;
 		}else if (timerStarted) {
@@ -136,6 +136,7 @@ void turnToAngle(int desAngle) {
 			timerStarted = false;
 		}
 		if (timerStarted && time1[T4] > 100) {
+				runDriveAt(0);
 				running = false;
 		}
 		wait1Msec(150);
@@ -146,7 +147,7 @@ void turnToAngle(int desAngle) {
 void goTo(float xGoal, float yGoal) {
 	float deltaY = yGoal - y;
 	float deltaX = xGoal - x;
-	float angle = atan2(deltaY/deltaX);
+	//float angle = atan2(deltaY/deltaX);
 }
 
 float limit(float v, float limit) {
@@ -291,6 +292,10 @@ task driveTask() {
 
 			float toSend = ((float)vexRT[Ch3])/127;
 			float toSendTurn = ((float)vexRT[Ch1])/127;
+			if(abs(toSend) < .1) {
+				toSend = 0;
+			}
+
 			chezyDrive((float)(toSend), (float)(toSendTurn), vexRT[Btn5U]);
 			isFirstTimePressed = true;
 			//lameDrive();

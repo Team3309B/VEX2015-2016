@@ -18,11 +18,11 @@ task shooterAuto() {
 			if (timerStarted && time1[T3] > 150) {
 				bLCDBacklight = true;
 				shooterIsReady = true;
-			}else if(!timerStarted) {
+				}else if(!timerStarted) {
 				clearTimer(T3);
 				timerStarted = true;
 			}else {	}
-		}else {
+			}else {
 			timerStarted = false;
 			bLCDBacklight = false;
 			shooterIsReady = false;
@@ -61,6 +61,27 @@ void shootAtCrossUpCloseShot() {
 
 void shootPreloadsFor(int time) {
 
+startTask(shooterAuto);
+	aimShooterSpeed = 535;
+	wait1Msec(4000);
+	motor[intake] = 127;
+	clearTimer(T2);
+	int ballsShot = 0;
+	while(ballsShot < 4) {
+		if(currentAcceleration < -30) {
+			motor[elevator2] = 0;
+			wait1Msec(1250);
+			ballsShot++;
+		}
+		if(time1[T2] > 5000)
+			ballsShot = 50;
+		motor[elevator2] = 127;
+	}
+
+	wait1Msec(4000);
+	aimShooterSpeed = 0;
+	motor[elevator2] = 0;
+	/*
 	//aimShooterSpeed = 450; // Cross Shot
 	//startTask(shooterAuto);
 	runShooterAt(127);
@@ -77,12 +98,141 @@ void shootPreloadsFor(int time) {
 	wait1Msec(3000);
 	//setElevator(0);
 	//motor[intake] = 0;
-//	stopTask(shooterAuto);
+	//	stopTask(shooterAuto);
 	//moveForwardPID(2700);
 	runShooterAt(0);
 	setElevator(0);
 	stopDrive();
+*/
+}
 
+void shootAndGo() {
+	shootPreloadsFor(6000);
+	runDriveAt(127);
+	wait1Msec(3000);
+	runDriveAt(0);
+}
+
+void shootAndGoAndShoot() {
+	int angle =SensorValue[gyro];
+	startTask(shooterAuto);
+	aimShooterSpeed = 535;
+	wait1Msec(4000);
+	motor[intake] = 127;
+	clearTimer(T2);
+	int ballsShot = 0;
+	while(ballsShot < 4) {
+		if(currentAcceleration < -30) {
+			motor[elevator2] = 0;
+			wait1Msec(1250);
+			ballsShot++;
+		}
+		if(time1[T2] > 5000)
+			ballsShot = 50;
+		motor[elevator2] = 127;
+	}
+
+
+	aimShooterSpeed = 0;
+	runDriveAt(127);
+	wait1Msec(1000);
+	aimShooterSpeed = 358;
+	wait1Msec(1500);
+	runDriveAt(0);
+	motor[elevator2] = 0;
+	turnToAngle(angle);
+	wait1Msec(4000);
+
+}
+
+void teamABlockAuto() {
+	runDriveAt(127);
+	wait1Msec(2000);
+	runDriveAt(63);
+	wait1Msec(1000);
+	runDriveAt(0);
+	wait1Msec(2750);
+	runDriveAt(-127);
+	wait1Msec(1500);
+	runDriveAt(0);
+}
+
+void forwardAndShootBeforeCrossRight() {
+	startTask(shooterAuto);
+	aimShooterSpeed = 485; //aim
+	moveForwardPID(170);
+	wait1Msec(1000);
+	turnToAngle(-380);
+	wait1Msec(1000);
+	moveForwardPID(1000);
+	runDriveAt(0);
+	wait1Msec(500);
+	turnToAngle(-360);
+	int ballsShot = 0;
+	motor[intake] = 127;
+
+	clearTimer(T2);
+	while(ballsShot < 4) {
+		if(currentAcceleration < -30) {
+			motor[elevator2] = 0;
+			writeDebugStreamLine("EHHH");
+			wait1Msec(850);
+			ballsShot++;
+		}
+		if(time1[T2] > 4000)
+			ballsShot = 50;
+		motor[elevator2] = 127;
+	}
+	wait1Msec(3000);
+	motor[elevator2] = 0;
+	motor[intake] = 0;
+	aimShooterSpeed = 0;
+	/*
+	motor[elevator2] = 63;
+	aimShooterSpeed = 350;
+	runDriveAt(127);
+	wait1Msec(2000);
+	motor[elevator2] = 127;
+	*/
+}
+
+void forwardAndShootBeforeCrossLeft() {
+	startTask(shooterAuto);
+	aimShooterSpeed = 485; //aim
+	moveForwardPID(170);
+	wait1Msec(1000);
+	turnToAngle(380);
+	wait1Msec(1000);
+	moveForwardPID(1000);
+	runDriveAt(0);
+	wait1Msec(500);
+	turnToAngle(360);
+	int ballsShot = 0;
+	motor[intake] = 127;
+
+	clearTimer(T2);
+	while(ballsShot < 4) {
+		if(currentAcceleration < -30) {
+			motor[elevator2] = 0;
+			writeDebugStreamLine("EHHH");
+			wait1Msec(850);
+			ballsShot++;
+		}
+		if(time1[T2] > 4000)
+			ballsShot = 50;
+		motor[elevator2] = 127;
+	}
+	wait1Msec(3000);
+	motor[elevator2] = 0;
+	motor[intake] = 0;
+	aimShooterSpeed = 0;
+	/*
+	motor[elevator2] = 63;
+	aimShooterSpeed = 350;
+	runDriveAt(127);
+	wait1Msec(2000);
+	motor[elevator2] = 127;
+	*/
 }
 
 void shootAtCross() {
@@ -97,8 +247,8 @@ void shootAtCross() {
 }
 
 void programmingSkills() {
-
-	runShooterAt(127);
+	startTask(shooterAuto);
+	aimShooterSpeed =  438;
 	wait1Msec(4000);
 	setElevator(127);
 	motor[intake] = 127;
@@ -106,7 +256,6 @@ void programmingSkills() {
 
 void rightCrossAndPole() {
 	startTask(shooterAuto);
-
 
 	moveForwardPID(170);
 	wait1Msec(100);
@@ -134,7 +283,7 @@ void rightCrossAndPole() {
 	//intaking
 	//elevator
 	aimShooterSpeed = 350;
-	moveForwardPID(1220, 35);
+	moveForwardPID(1220, 35, 5000);
 	motor[elevator2] = 127;
 }
 
@@ -168,35 +317,8 @@ void leftCrossAndPole() {
 	//intaking
 	//elevator
 	aimShooterSpeed = 350;
-	moveForwardPID(1220, 35);
+	moveForwardPID(1220, 35, 5000);
 	motor[elevator2] = 127;
-}
-
-void getSideStackRight() {
-
-}
-
-void getSideStackLeft() {
-
-
-	runShooterAt(127);
-	moveForwardPID(170);
-	wait1Msec(100);
-	turnToAngle(370);
-	wait1Msec(500);
-	motor[elevator2] = 85;
-	wait1Msec(1000);
-	motor[intake] = 127;
-	wait1Msec(2500);
-	motor[elevator2] = 0;
-	runShooterAt(0);
-
-	startTask(shooterAuto);
-	moveForwardPID(1200);
-	turnToAngle(20000);
-	motor[intake] = 127;
-	moveForwardPID(700);
-
 }
 
 void D986Auto() {
@@ -207,8 +329,94 @@ void D986Auto() {
 	motor[intake] = 0;
 }
 
-void startauton() {
+void moveForwardAndShootBallsRight() {
+	startTask(shooterAuto);
+	aimShooterSpeed = 455;
+	moveForwardPID(170);
+	turnToAngle(-380);
+	moveForwardPID(1600);
+	turnToAngle(-325);
+	int ballsShot = 0;
+	motor[intake] = 127;
 
+	clearTimer(T2);
+	while(ballsShot < 4) {
+		if(currentAcceleration < -30) {
+			motor[elevator2] = 0;
+			writeDebugStreamLine("EHHH");
+			wait1Msec(850);
+			ballsShot++;
+		}
+		if(time1[T2] > 4000)
+			ballsShot = 50;
+		motor[elevator2] = 127;
+	}
+	aimShooterSpeed = 0;
+	turnToAngle(-1950);
+	wait1Msec(500);
+	moveForwardPID(800);
+	turnToAngle(-1800);
+	moveForwardPID(400, 30, 2000);
+
+	wait1Msec(200);
+	runDriveAt(-127);
+	wait1Msec(750);
+	turnToAngle(-300);
+	runDriveAt(127);
+
+	//turnToAngle(-1800);
+	//moveForwardPID(1200);
+}
+
+void moveForwardAndShootBallsLeft() {
+	startTask(shooterAuto);
+	aimShooterSpeed = 455;
+	moveForwardPID(170);
+	turnToAngle(380);
+	moveForwardPID(1600);
+	turnToAngle(325);
+	int ballsShot = 0;
+	motor[intake] = 127;
+
+	clearTimer(T2);
+	while(ballsShot < 4) {
+		if(currentAcceleration < -30) {
+			motor[elevator2] = 0;
+			writeDebugStreamLine("EHHH");
+			wait1Msec(850);
+			ballsShot++;
+		}
+		if(time1[T2] > 4000)
+			ballsShot = 50;
+		motor[elevator2] = 127;
+	}
+	aimShooterSpeed = 0;
+	turnToAngle(1950);
+	wait1Msec(500);
+	moveForwardPID(800);
+	turnToAngle(1800);
+	moveForwardPID(400, 30, 2000);
+
+	wait1Msec(200);
+	runDriveAt(-127);
+	wait1Msec(750);
+	turnToAngle(300);
+	runDriveAt(127);
+
+	//turnToAngle(-1800);
+	//moveForwardPID(1200);
+}
+
+void turnToOpponentGoalAndShot() {
+	startTask(shooterAuto);
+	aimShooterSpeed = 447;
+	wait1Msec(4000);
+	motor[elevator2] = 127;
+	wait1Msec(2000);
+	motor[intake] = 127;
+}
+
+void startauton() {
 	//Clear LCD
 	clearLCDLine(0);
 	clearLCDLine(1);
@@ -220,23 +428,45 @@ void startauton() {
 		wait1Msec(15000);
 		break;
 	case 1:
-		shootPreloadsFor(6000);
+		forwardAndShootBeforeCrossRight();
 		break;
 	case 2:
-		rightCrossAndPole();
+		forwardAndShootBeforeCrossLeft();
 		break;
 	case 3:
-		leftCrossAndPole();
+		moveForwardAndShootBallsRight();
 		break;
 	case 4:
-		getSideStackLeft()
+		moveForwardAndShootBallsLeft();
 		break;
 	case 5:
-		getSideStackRight()
+		rightCrossAndPole();
 		break;
 	case 6:
+		leftCrossAndPole();
+		break;
+	case 7:
+		shootPreloadsFor(6000);
+		break;
+	case 8:
+		shootAndGo();
+		break;
+	case 9:
+		shootAndGoAndShoot();
+		break;
+	case 10:
 		D986Auto();
 		break;
+	case 11:
+		teamABlockAuto();
+		break;
+	case 12:
+		turnToOpponentGoalAndShot();
+		break;
+	case 13:
+		runDriveAt(127);
+		wait1Msec(3000);
+		runDriveAt(0);
 	default:
 		displayLCDCenteredString(0, "No valid choice");
 		displayLCDCenteredString(1, "was made!");

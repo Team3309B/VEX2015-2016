@@ -41,7 +41,6 @@ int count = 0;
 task runLCD(){
 	//Declare count variable to keep track of our choice
 
-
 	//------------- Beginning of User Interface Code ---------------
 	//Clear LCD
 	clearLCDLine(0);
@@ -60,7 +59,7 @@ task runLCD(){
 			//Increment or decrement "count" based on button press
 			if(nLCDButtons == leftButton) { //since this is option 0, hitting left will bring the LCD to the max option
 				waitForRelease();
-				count = 6;
+				count = 13;
 			}
 			else if(nLCDButtons == rightButton)
 			{
@@ -70,7 +69,7 @@ task runLCD(){
 			break;
 		case 1:
 			//Display second choice
-			displayLCDCenteredString(0, "Shoot Preloads");
+			displayLCDCenteredString(0, "Red Main");
 			displayLCDCenteredString(1, "<         Enter        >");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -85,7 +84,7 @@ task runLCD(){
 			break;
 		case 2:
 			//Display third choice
-			displayLCDCenteredString(0, "Goal Right");
+			displayLCDCenteredString(0, "Blue Red");
 			displayLCDCenteredString(1, "<         Enter        >");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -100,7 +99,8 @@ task runLCD(){
 			break;
 		case 3:
 			//Display fourth choice
-			displayLCDCenteredString(0, "Goal Left");
+			displayLCDCenteredString(0, "Red Side");
+
 			displayLCDCenteredString(1, "<         Enter        >");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -115,7 +115,7 @@ task runLCD(){
 			break;
 		case 4:
 			//Display fourth choice
-			displayLCDCenteredString(0, "Side Left");
+			displayLCDCenteredString(0, "Blue Side");
 			displayLCDCenteredString(1, "<         Enter        >");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -130,7 +130,8 @@ task runLCD(){
 			break;
 		case 5:
 			//Display fourth choice
-			displayLCDCenteredString(0, "Side Right");
+			displayLCDCenteredString(0, "Red X Pole");
+
 			displayLCDCenteredString(1, "<         Enter        >");
 			waitForPress();
 			//Increment or decrement "count" based on button press
@@ -145,7 +146,115 @@ task runLCD(){
 			break;
 		case 6:
 			//Display fourth choice
-			displayLCDCenteredString(0, "Attack Center");
+			displayLCDCenteredString(0, "Blue X Pole");
+
+			displayLCDCenteredString(1, "<         Enter        >");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton){
+				waitForRelease();
+				count--;
+			}
+			else if(nLCDButtons == rightButton){ //since this is the max choice, moving right will loop back to beginning again
+				waitForRelease();
+				count++;
+			}
+			break;
+		case 7:
+			//Display fourth choice
+			displayLCDCenteredString(0, "Shoot Preloads");
+			displayLCDCenteredString(1, "<         Enter        >");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton){
+				waitForRelease();
+				count--;
+			}
+			else if(nLCDButtons == rightButton){ //since this is the max choice, moving right will loop back to beginning again
+				waitForRelease();
+				count++;
+			}
+			break;
+		case 8:
+			//Display fourth choice
+			displayLCDCenteredString(0, "Pre and Go");
+
+			displayLCDCenteredString(1, "<         Enter        >");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton){
+				waitForRelease();
+				count--;
+			}
+			else if(nLCDButtons == rightButton){ //since this is the max choice, moving right will loop back to beginning again
+				waitForRelease();
+				count++;
+			}
+			break;
+		case 9:
+			//Display fourth choice
+			displayLCDCenteredString(0, "Pre And Go Bam");
+
+			displayLCDCenteredString(1, "<         Enter        >");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton){
+				waitForRelease();
+				count--;
+			}
+			else if(nLCDButtons == rightButton){ //since this is the max choice, moving right will loop back to beginning again
+				waitForRelease();
+				count++;
+			}
+			break;
+		case 10:
+			//Display fourth choice
+			displayLCDCenteredString(0, "Attack Pole");
+			displayLCDCenteredString(1, "<         Enter        >");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton){
+				waitForRelease();
+				count--;
+			}
+			else if(nLCDButtons == rightButton){ //since this is the max choice, moving right will loop back to beginning again
+				waitForRelease();
+				count++;
+			}
+			break;
+		case 11:
+			//Display fourth choice
+			displayLCDCenteredString(0, "Team A Block");
+			displayLCDCenteredString(1, "<         Enter        >");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton){
+				waitForRelease();
+				count--;
+			}
+			else if(nLCDButtons == rightButton){ //since this is the max choice, moving right will loop back to beginning again
+				waitForRelease();
+				count++;
+			}
+			break;
+		case 12:
+			//Display fourth choice
+			displayLCDCenteredString(0, "SP");
+			displayLCDCenteredString(1, "<         Enter        >");
+			waitForPress();
+			//Increment or decrement "count" based on button press
+			if(nLCDButtons == leftButton){
+				waitForRelease();
+				count--;
+			}
+			else if(nLCDButtons == rightButton){ //since this is the max choice, moving right will loop back to beginning again
+				waitForRelease();
+				count++;
+			}
+			break;
+		case 13:
+			//Display fourth choice
+			displayLCDCenteredString(0, "Aim And Shoot");
 			displayLCDCenteredString(1, "<         Enter        >");
 			waitForPress();
 			//Increment or decrement "count" based on button press
