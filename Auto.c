@@ -13,7 +13,7 @@ task shooterAuto() {
 		float curEn = ((float)nMotorEncoder[shooter1]);
 		currentVelocity = -((float)((float)curEn - (float)pastShooter)/((float)shooterEquationDelayAmount)) * 10.0 * 60.0; // gets in rpm
 		currentAcceleration = currentVelocity - previousShooterVelocity;
-		shoot();
+	//	shoot();
 		if ( abs(currentVelocity) < ( abs(aimShooterSpeed) + 26) && abs(currentVelocity) > ( abs(aimShooterSpeed) - 26 ) ) {
 			if (timerStarted && time1[T3] > 150) {
 				bLCDBacklight = true;
