@@ -54,28 +54,64 @@ void checkAndFindSpeed() {
 
 //float kV = .1;
 //float kA = .1;
-float kP = 0;
-float maxVel = 550;
-float maxAcc = 50;
-float kV = .1;
-float kA = (1/30)/50;
-float ACCELERATION_THRESHOLD = 20;
-int getFeedForwardPower(float goalVel, float curVel) {
+
+// Error Constant
+float kP = 0.3;
+// Max Velocity the flywheel can go
+float maxVel = 600;
+// Max acceleration the flywheel can achieve (disregard initial spinup when finding this number)
+float maxAcc = 20;
+// Constant which scales velocity
+float kV = (1.0/1170.0);
+// Constant which scales acceleration
+float kA = (1.0/20.0);
+// The Threshold in which the flywheel should have extra power because it is accelerating.
+float ACCELERATION_THRESHOLD = 100;
+// The flywheel will run at full if the current velocity is below this
+float PERCENT_OF_MAX_TO_RUN_AT_FULL_POWER = (1/3);
+// Max power that acceleration can contribute to spinup
+float MAX_ACC_POWER = 40.0;
+
+float getFeedForwardPower(float goalVel, float curVel) {
+
+	// Don't send any power if the goal is 0
 	if (goalVel == 0) {
 		return 0;
 	}
-	float goalForThisLoop;
-	if(curVel < goalVel - ACCELERATION_THRESHOLD) {
-		goalForThisLoop = curVel + maxAcc;
-		} else if(curVel > goalVel + ACCELERATION_THRESHOLD) {
-		goalForThisLoop = curVel - maxAcc;
-		} else {
-		goalForThisLoop = curVel;
+
+	// Run at full power if the flywheel is below a third of its max vel
+	// This makes spinup faster
+	if (curVel < PERCENT_OF_MAX_TO_RUN_AT_FULL_POWER * maxVel) {
+		return 127.0;
 	}
-	writeDebugStreamLine("Error: %4.4f", ((float)(goalForThisLoop) - (float)curVel ) );
-	float scaledErrorPower =  kP * (float)((float)(goalForThisLoop) - (float)curVel );
-	int power = (int)((float)127.0*(kV * goalForThisLoop)) + (int)scaledErrorPower;
-	writeDebugStreamLine( "Current Vel: %3.0f, Aim For This Loop: %3.0f, Power: %3.0f, Scaled Error Power: %3.0f, Sca;ed Velocity Power: %3.0f", currentVelocity, goalForThisLoop, power, scaledErrorPower, 127*(kV * goalForThisLoop));
+
+	// Find goal acceleration
+	float goalAcc;
+	// if curVel is less than the threshold, goalAcc is maxAcc
+	// else if curVel is above the the threshold, goalAcc is -maxAcc
+	// else require no acc
+	if(curVel < goalVel - ACCELERATION_THRESHOLD) {
+		goalAcc =  maxAcc;
+	} else if(curVel > goalVel + ACCELERATION_THRESHOLD) {
+		goalAcc = -maxAcc;
+	} else {
+		goalAcc = 0;
+	}
+
+	// Scale all of the values and translate them to power values
+	float scaledErrorPower =  kP * (float)((float)(goalVel) - (float)curVel ); // error * kP
+	float scaledVelPower = 127.0 * (kV * (float)((float)(goalVel))); // calculate scaled vel then translate to power values
+	float scaledAccPower = MAX_ACC_POWER * (kA * (float)((float)(goalAcc))); // calculate scaled acc then translate to power values
+	if (abs(scaledErrorPower) > abs(scaledVelPower)) { // if the robot is changing shots, only use the scaled velocity and acc, not the scaled error
+		scaledErrorPower = 0;
+	}
+	// Add all three terms up
+	float power = (float)scaledVelPower + + (float)scaledAccPower + (float)scaledErrorPower;
+	// if the power value is negative (meaning the flywheel is trying to slow down) run the flywheel at 20
+	if (power < 0) {
+		power = 20;
+	}
+	writeDebugStreamLine( "Current Vel: %3.0f, Aim Vel: %3.0f, Power: %3.0f, Scaled Err Pow: %3.0f, Scaled Vel Pow: %3.0f, Scaled Acc Pow: %3.0f", currentVelocity, goalVel, power, scaledErrorPower, scaledVelPower , scaledAccPower);
 	return power;
 }
 

@@ -113,11 +113,11 @@ task usercontrol() {
 		rightDriveVelocity = (float)(((float)SensorValue[rightDrive] - pastRight) / delayAmount);
 		gyroAngularVelocity = (float)(((float)-SensorValue[gyro] - pastGyro) / delayAmount);
 
-		writeDebugStreamLine("LeftError: %4.4f rightError: %4.4f gyroError: %4.4f", ((float)SensorValue[leftDrive] - pastLeft), ((float)-SensorValue[rightDrive] - pastRight),  ((float)-SensorValue[gyro] - pastGyro));
+		//writeDebugStreamLine("LeftError: %4.4f rightError: %4.4f gyroError: %4.4f", ((float)SensorValue[leftDrive] - pastLeft), ((float)-SensorValue[rightDrive] - pastRight),  ((float)-SensorValue[gyro] - pastGyro));
 		x += sin((SensorValue[gyro]/10) * (pi/180)) * ((((float)-SensorValue[leftDrive] - pastLeft) + ((float)SensorValue[rightDrive] - pastRight))/2);
 		y += cos((SensorValue[gyro]/10) * (pi/180)) * ((((float)-SensorValue[leftDrive] - pastLeft) + ((float)SensorValue[rightDrive] - pastRight))/2);
-		writeDebugStreamLine("anglerawcos:%4.4f cos: %4.4f sin: %4.4f h: %4.4f", cos((SensorValue[gyro]/10) * (pi/180)), cos(SensorValue[gyro]/10), sin(SensorValue[gyro]/10),((((float)-SensorValue[leftDrive] - pastLeft) + ((float)SensorValue[rightDrive] - pastRight))/2 ));
-		writeDebugStreamLine("x: %i y: %i", x, y);
+	//	writeDebugStreamLine("anglerawcos:%4.4f cos: %4.4f sin: %4.4f h: %4.4f", cos((SensorValue[gyro]/10) * (pi/180)), cos(SensorValue[gyro]/10), sin(SensorValue[gyro]/10),((((float)-SensorValue[leftDrive] - pastLeft) + ((float)SensorValue[rightDrive] - pastRight))/2 ));
+		//writeDebugStreamLine("x: %i y: %i", x, y);
 
 		pastRight = (float)SensorValue[rightDrive];
 		pastLeft = (float)-SensorValue[leftDrive];

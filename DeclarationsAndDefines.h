@@ -56,7 +56,7 @@ PID shooterConstantPID; // Balances power to keep consistent speed
 int ticksSinceShoot = 0;
 #define TICKS_TO_USE_QUICK_SPEED_AFTER_SHOOTING 300
 #define SHOOTER_OFFSET_AFTER_SHOOTING 20
-#define shooterEquationDelayAmount 100
+#define shooterEquationDelayAmount 50
 
 PID elevatorPID;
 float pastElevatorVelocity = 0;
